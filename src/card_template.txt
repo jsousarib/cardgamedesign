@@ -1,0 +1,31 @@
+<style>
+  .card_title{
+    display: flex;
+    justify-content: flex-start;
+    padding-left: 10px;
+    align-items: center;
+    font-weight: bold;
+    font-family: arial;
+    font-size: 150%;
+    border-bottom: 1px solid black;
+    background: #dfdfdf;
+    height: 20%;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: default;
+  }
+  
+  .card_description{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: arial;
+    font-size: 110%;
+    background: white;
+    height: calc(80% - 1px);
+    cursor: default;
+  }
+</style>
+
+<div class = "card_title">.card_title</div>
+<div class = "card_description">.card_description</div>

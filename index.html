@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="src/js/codemirror-5.59.1/lib/codemirror.css">
+	<style type="text/css">
+		html, body { height: calc(100% - 8px); font-family: monospace; font-size: 16px; }
+
+		.tooltip {
+		  position: relative;
+		  display: inline-block;
+		  float: left;
+		}
+
+		.tooltip .tooltiptext {
+		  visibility: hidden;
+		  background-color: black;
+		  color: #fff;
+		  text-align: center;
+		  border-radius: 6px;
+		  padding: 5px 5px;
+		  width: 300px;
+		  font-size: 100%;
+		  font-weight: normal;
+
+		  /* Position the tooltip */
+		  position: absolute;
+		  z-index: 999;
+		}
+
+		.tooltip:hover .tooltiptext {
+		  visibility: visible;
+		  transition-delay: 0.3s;
+		}
+
+		.topbar{
+			position: fixed;
+			display: flex;
+			width: 100%;
+			height: 70px;
+			margin: -8px 0px 0px -8px;
+			background-color: #2A86A8;
+			color: white;
+			border: 0px solid black;
+		  	box-sizing: border-box;
+		  	box-shadow: 0px 6px 6px -3px rgba(0, 0, 0, 0.2), 0px 10px 14px 1px rgba(0, 0, 0, 0.14), 0px 4px 18px 3px rgba(0, 0, 0, 0.12);
+		  	z-index: 999;
+		}
+
+		.topbar_title{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			border: 0px solid black;
+			width: 25%;
+			font-weight: bold;
+			cursor: pointer;
+		}
+
+		.topbar_menu{
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+			border: 0px solid black;
+			width: 25%;
+			cursor: pointer;
+		}
+
+		.section{
+			display: flex;
+			position: absolute;
+			width: 100%;
+			min-height: calc(100% - 70px);
+			margin: 62px 0px 0px -8px;
+			border: 0px solid black;
+		  	box-sizing: border-box;
+		}
+
+		.container{
+			border: 0px solid red;
+			box-sizing: border-box;
+			width: 100%;
+			max-width: 1140px;
+		}
+
+		.container_fluid{
+			border: 0px solid red;
+			box-sizing: border-box;
+			width: 100%;
+		}
+
+		#home{
+			justify-content: center;
+		}
+
+		.home_container{
+	 		text-align: justify;
+			padding: 10px;
+		}
+
+		.home_container span{
+			font-size: 1.1em;
+		}
+
+		#setup, #play{
+			display: none;
+		}
+
+		.setup_container{
+			padding: 30px 20px 20px 20px;
+		}
+
+		#setup h2{
+			text-align: left;
+			margin: 0px 0px 10px 0px;
+		}
+
+		#setup .CodeMirror_DIV{
+			display: flex;
+			border: 2px solid grey;
+			height: 315px;
+		}
+
+		#cardSelect:focus{
+		 	outline: none;
+		}
+
+		#cardsJSONInvalid{
+			margin-left: 10px!important;
+		}
+
+		#cardsAutoIDBtn{
+			margin-left: 10px!important;
+			padding: 5px;
+			margin-top: -5px!important;
+			margin-bottom: 5px!important;
+			border-radius: 5px;
+			background-color: #2A86A8;
+			color: white;
+			cursor: pointer;
+		}
+
+		#cardsAutoIDBtn:hover{
+			background-color: #267897;
+		}
+
+		#play{
+			justify-content: center;
+		}
+
+		.play_container{
+	 		text-align: justify;
+			padding: 10px;
+		}
+
+		.play_container span{
+			font-size: 1.1em;
+		}
+
+		// Small devices (landscape phones, 576px and up)
+		@media (min-width: 576px) {
+			.container{
+				max-width: 540px;
+			}
+		}
+
+		// Medium devices (tablets, 768px and up)
+		@media (min-width: 768px) {
+			.container{
+				max-width: 720px;
+			}
+		}
+
+		// Large devices (desktops, 992px and up)
+		@media (min-width: 992px) {
+			.container{
+				max-width: 960px;
+			}
+		}
+
+		// Extra large devices (large desktops, 1200px and up)
+		@media (min-width: 1200px) {
+			.container{
+				max-width: 1140px;
+			}
+		}
+
+	</style>
+ 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+ 	<script src="src/js/fittext.js"></script>
+ 	<script src="src/js/codemirror-5.59.1/lib/codemirror.js"></script>
+	<script src="src/js/codemirror-5.59.1/mode/xml/xml.js"></script>
+	<script src="src/js/codemirror-5.59.1/mode/javascript/javascript.js"></script>
+	<script src="src/js/codemirror-5.59.1/mode/css/css.js"></script>
+	<script src="src/js/codemirror-5.59.1/mode/htmlmixed/htmlmixed.js"></script>
+</head>
+<body>
+
+	<div class = "topbar">
+		<div onclick="OnTopBarMenuClick('home')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_title">Card Game Design</div>
+		<div onclick="OnTopBarMenuClick('setup')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_menu">Setup</div>
+		<div onclick="OnTopBarMenuClick('play')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_menu">Play</div>
+	</div>
+
+	<div id = "home" class = "section">
+		<div class = "container home_container">
+			<div style = "margin-top: 40px; text-align: center;">
+				<h1 style = "color: #FFA92C; margin-bottom: 5px">Project under construction!</h1>
+				<span>Some features may still be under development.</span>
+			</div>
+			<div>
+				<h1>So, what is this?</h1>
+				<span>A soon to be open source project to assist Game Designers or enthusiasts in the prototyping of card game ideas. With embedded HTML, CSS and JSON editors, multiple examples and tutorials, any person with minimal coding skills can quickly create their own card designs and test their prototype in a playable test environment.</span>
+			</div>
+			<br>
+			<hr>
+			<div>
+				<h1>And how do I start?</h1>
+				<span>On the top of this page you have a navigation bar with two menus. On <b>Setup</b> you can create the card templates, the list of all different cards and the decks you want to prototype. On <b>Play</b> you can spawn the decks you created and test your gameplay.</span>
+			</div>
+			<br>
+			<hr>
+			<div>
+				<h1>Can I print the cards instead?</h1>
+				<span>Yes, on <b>Setup</b> at the bottom you have an option to select the cards you want and print them.</span>
+			</div>
+		</div>
+	</div>
+
+	<div id = "setup" class = "section">
+		<div class = "container_fluid setup_container">
+
+		<!-- Card Template -->
+		<div style="display: flex; border: 0px solid black;">
+			<div>
+				<h2>Card Template</h2>
+				<div id = "cardTemplateDIV" style = "border: 2px solid black; width: 225px; height: 315px;">
+				
+				</div>
+			</div>
+			<div style = "margin-left: 10px; width: 100%">
+				<h2>Card Template (HTML)</h2>
+				<div class = "CodeMirror_DIV">
+					<textarea id = "cardTemplateTA"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<br>
+
+		<!-- Card Example and JSON -->
+		<div style="display: flex; border: 0px solid black;">
+			<div>
+				<div style = "display: flex;">
+					<h2>Card Example</h2>
+					<h2 style = "color: #2A86A8" class = "tooltip">(?)
+						<span class="tooltiptext">The dropdown value uses the card's first key with 'title' included (example: .card_title)</span>
+					</h2>
+				</div>
+				<select id = "cardSelect" onchange="OnCardSelectChange(this)" style="font-size: 1em; width: 100%; height: 2em; border: 2px solid black; border-bottom: none;">
+				    <option>Card A</option>
+				</select>
+				<div id = "cardExampleDIV" style = "border: 2px solid black; width: 225px; height: 315px;">
+				
+				</div>
+			</div>
+			<div style = "margin-left: 10px; width: 100%">
+				<div style = "display: flex;">
+					<h2>Cards JSON</h2>
+					<h2 id = "cardsJSONInvalid" style = "color: red; display: none;">(Invalid)</h2>
+					<!--<button style = "margin-left: 10px; margin-bottom: 5px;" id = "cardsAutoIDBtn" onclick = "GenerateAutoIDs();">Auto IDs</button>-->
+					<!--<div style = "margin-left: 10px; border: 1px solid red; margin-bottom: 5px; display: flex; align-items: center;"><h2>Auto IDs</h2></div>-->
+					<h2 onclick = "GenerateAutoIDs();" id = "cardsAutoIDBtn" style = "">Auto IDs</h2>
+				</div>
+				<div class = "CodeMirror_DIV" style = "height: 347px;">
+					<textarea id = "cardsJSONTA"></textarea>
+				</div>
+			</div>
+		</div>
+
+		</div>
+	</div>
+
+	<div id = "play" class = "section">
+		<div class = "container play_container">
+			<div style = "margin-top: 40px; text-align: center;">
+				<h1 style = "color: #FFA92C; margin-bottom: 5px">Project under construction!</h1>
+				<span>Some features may still be under development.</span>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+
+	/* Document Object Models */
+
+	var topbar_title = document.getElementsByClassName('topbar_title')[0];
+	var topbar_menus = Array.from(document.getElementsByClassName('topbar_menu'));
+
+	var home = document.getElementById('home');
+	var setup = document.getElementById('setup');
+	var play = document.getElementById('play');
+
+	var cardTemplateDIV = document.getElementById('cardTemplateDIV');
+	var cardTemplateTA = document.getElementById('cardTemplateTA');
+	var cardsJSONTA = document.getElementById('cardsJSONTA');
+	var cardsJSONInvalid = document.getElementById('cardsJSONInvalid');
+	var cardsAutoIDBtn = document.getElementById('cardsAutoIDBtn');
+	var cardSelect = document.getElementById('cardSelect');
+
+
+
+	/* Objects */
+
+	var bodyFontSize = parseFloat(getComputedStyle(document.body).fontSize);
+	var visibleSection = home;
+
+	var setupObj = {
+		init: false,
+		cardTemplateEditor: null,
+		cardsJSONEditor: null,
+		cardsJSON: []
+	}
+
+	/* Initializations */
+
+	fitText(topbar_title, 1, {minFontSize : bodyFontSize*1.5, maxFontSize : bodyFontSize*2.75});
+	topbar_menus.forEach(menu => {fitText(menu, 1, {minFontSize : bodyFontSize*1.5, maxFontSize : bodyFontSize*2.25});});
+	//OnTopBarMenuClick('setup');
+
+	/* Functions */
+
+	function OnTopBarMenuHover(element, event)
+	{
+		if(event == 'in')
+			element.style.backgroundColor = "rgba(0, 0, 0, 0.1)";
+		else if(event == 'out')
+			element.style.backgroundColor = "initial";
+	}
+
+	function OnTopBarMenuClick(menu)
+	{
+		if(menu == 'home' && visibleSection != home)
+		{
+			visibleSection.style.display = "none";
+			visibleSection = home;
+			LoadHome();
+		}
+		else if(menu == 'setup' && visibleSection != setup)
+		{
+			visibleSection.style.display = "none";
+			visibleSection = setup;
+			LoadSetup();
+		}
+		else if(menu == 'play' && visibleSection != play)
+		{
+			visibleSection.style.display = "none";
+			visibleSection = play;
+			LoadPlay();
+		}
+	}
+
+	function LoadHome()
+	{
+		home.style.display = "flex";
+	}
+
+	function LoadSetup()
+	{
+		setup.style.display = "flex";
+
+		if(setupObj.init == false)
+		{
+			setupObj.cardTemplateEditor = CodeMirror.fromTextArea(cardTemplateTA, {
+				lineNumbers: true,
+				mode : "htmlmixed"
+			});
+			setupObj.cardTemplateEditor.setSize("100%", "100%");
+			setupObj.cardTemplateEditor.on("blur", function(){
+				cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+			});
+			fetch("src/card_template.txt")
+				.then(function(response) {
+					response.text().then(function(text) {
+						setupObj.cardTemplateEditor.setValue(text);
+						cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+				});
+			});
+
+			setupObj.cardsJSONEditor = CodeMirror.fromTextArea(cardsJSONTA, {
+				lineNumbers: true,
+				mode : {name: "javascript", json: true}
+			});
+			setupObj.cardsJSONEditor.setSize("100%", "100%");
+			setupObj.cardsJSONEditor.on("blur", function(){
+				OnCardsJSONEdit();
+			});
+			fetch("src/card_list.json")
+				.then(function(response) {
+					response.text().then(function(text) {
+						setupObj.cardsJSONEditor.setValue(text);
+						OnCardsJSONEdit();
+				});
+			});
+
+
+
+			setupObj.init = true;
+		}
+	}
+
+	function LoadPlay()
+	{
+		play.style.display = "flex";
+	}
+
+	function OnCardsJSONEdit()
+	{
+		var json_s = setupObj.cardsJSONEditor.getValue();
+
+		var isJSONValid = false;
+
+		try {
+			setupObj.cardsJSON = JSON.parse(json_s);
+
+			if(Array.isArray(setupObj.cardsJSON))
+				isJSONValid = true;
+		}
+		catch (e) {
+			if(json_s == "")
+			{
+				setupObj.cardsJSON = [];
+				isJSONValid = true;
+			}
+		}
+
+		if(isJSONValid == false)
+		{
+			setupObj.cardsJSON = [];
+			cardsJSONInvalid.style.display = "block";
+			cardsAutoIDBtn.style.display = "none";
+		}
+		else
+		{
+			cardsJSONInvalid.style.display = "none";
+			cardsAutoIDBtn.style.display = "block";
+		}
+
+		cardSelect.options.length = 0;
+		for (var i = 0; i < setupObj.cardsJSON.length; i++)
+		{
+			var cardObj = setupObj.cardsJSON[i];
+			var hasTitle = false;
+			var option = document.createElement("option");
+			for (const [key, value] of Object.entries(cardObj)) {
+				
+				if(key.toLowerCase().includes('title')){
+					option.text = value;
+					hasTitle = true;
+					break;
+				}
+			}
+
+			if(!hasTitle)
+				option.text = "";
+
+			cardSelect.options.add(option);
+		}
+
+		DisplayExampleCard();
+	}
+
+	function OnCardSelectChange(select)
+	{
+		DisplayExampleCard(select.selectedIndex);
+	}
+
+	function DisplayExampleCard(index = 0)
+	{
+		if(setupObj.cardTemplateEditor.getValue() == "")
+		{
+			fetch("src/card_template.txt")
+			.then(function(response) {
+				response.text().then(function(text) {
+					setupObj.cardTemplateEditor.setValue(text);
+					DisplayExampleCard();
+				});
+			});
+			return;
+		}
+
+		var templateHTML = setupObj.cardTemplateEditor.getValue();
+		var split = templateHTML.split("</style>");
+		if(split.length >= 2)
+		{
+			templateHTML = split[1];
+			if(templateHTML[0] == '\n')
+			{
+				templateHTML = templateHTML.replace('\n', "");
+			}
+		}
+
+		if(index < setupObj.cardsJSON.length)
+		{
+			var cardObj = setupObj.cardsJSON[index];
+			cardExampleDIV.innerHTML = templateHTML;
+			for (const [key, value] of Object.entries(cardObj)) {
+				if(key[0] == "."){
+					cardExampleDIV.getElementsByClassName(key.substr(1))[0].innerHTML = value;
+				}
+			}
+		}
+	}
+
+	function GenerateAutoIDs()
+	{
+		for (var i = 0; i < setupObj.cardsJSON.length; i++) {
+			setupObj.cardsJSON[i]['card_id'] = i.toString();
+		}
+
+		setupObj.cardsJSONEditor.setValue(JSON.stringify(setupObj.cardsJSON, undefined, 2));
+	}
+</script>
+
+</html>
