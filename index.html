@@ -4,7 +4,14 @@
 	<title></title>
 	<link rel="stylesheet" href="src/js/codemirror-5.59.1/lib/codemirror.css">
 	<style type="text/css">
-		html, body { height: calc(100% - 8px); font-family: monospace; font-size: 16px; }
+		html, body
+		{
+			height: calc(100% - 8px);
+			font-family: monospace;
+			font-size: 16px;
+
+			background-color: #2a86a80a;
+		}
 
 		.tooltip {
 		  position: relative;
@@ -69,7 +76,7 @@
 		}
 
 		.section{
-			display: flex;
+			display: block;
 			position: absolute;
 			width: 100%;
 			min-height: calc(100% - 70px);
@@ -83,12 +90,18 @@
 			box-sizing: border-box;
 			width: 100%;
 			max-width: 1140px;
+			margin-left: auto;
+			margin-right: auto;
 		}
 
 		.container_fluid{
 			border: 0px solid red;
 			box-sizing: border-box;
 			width: 100%;
+		}
+
+		#setup, #play{
+			display: none;
 		}
 
 		#home{
@@ -100,12 +113,15 @@
 			padding: 10px;
 		}
 
-		.home_container span{
+		.home_container span, .home_container li{
 			font-size: 1.1em;
+		  	line-height: 1.4;
 		}
 
-		#setup, #play{
-			display: none;
+		#setup{
+			justify-content: center;
+			height: calc(100% - 70px);
+			overflow: auto;
 		}
 
 		.setup_container{
@@ -117,14 +133,36 @@
 			margin: 0px 0px 10px 0px;
 		}
 
+		#cardTemplateDIV{
+			position: relative;
+			border: 2px solid black;
+			width: 225px;
+			height: 315px;
+		}
+
 		#setup .CodeMirror_DIV{
 			display: flex;
 			border: 2px solid grey;
 			height: 315px;
 		}
 
+		#cardSelect{
+			font-size: 1em;
+			width: 100%;
+			height: 2em;
+			border: 2px solid black;
+			border-bottom: none;
+		}
+
 		#cardSelect:focus{
 		 	outline: none;
+		}
+
+		#cardExampleDIV{
+			position: relative;
+			border: 2px solid black;
+			width: 225px;
+			height: 315px;
 		}
 
 		#cardsJSONInvalid{
@@ -146,17 +184,64 @@
 			background-color: #267897;
 		}
 
+		#decksJSONInvalid{
+			margin-left: 10px!important;
+		}
+
 		#play{
-			justify-content: center;
+		
 		}
 
 		.play_container{
-	 		text-align: justify;
-			padding: 10px;
+	 		position: fixed;
+			border: 0px solid red;
+			background: radial-gradient(#2a86a80a, #BFDAE5);
 		}
 
-		.play_container span{
-			font-size: 1.1em;
+		.play_background {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			background-image: url("src/prototype_grid.jpg");
+			background-position: center;
+			background-repeat: repeat;
+			background-size: 200px;
+			opacity: 0.3;
+		}
+
+		.playContextmenu{
+			position: absolute;
+			display: block;
+			background-color: #2A86A8;
+			padding: 10px 0px;
+			border-radius: 5px;
+			//box-shadow: 2px 2px 30px lightgrey;
+			box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.7);
+			transform-origin: center;
+			//z-index: 2;
+			opacity: 0;
+			transform: scale(0);
+			transition: transform 0.1s, opacity 0.1s;
+			margin: 0px;
+		}
+
+		.playContextmenu.show {
+			opacity: 1;
+			transform: scale(1);
+			transform-origin: top left;
+		}
+
+		.playContextmenu_item {
+			display: block;
+			padding: 10px 30px;
+			transition: 0.1s;
+			color: white;
+			font-size: 1.5rem;
+			white-space: nowrap;
+		}
+		.playContextmenu_item:hover {
+			background-color: rgba(0, 0, 0, 0.2);
+			cursor: pointer;
 		}
 
 		// Small devices (landscape phones, 576px and up)
@@ -212,7 +297,7 @@
 			</div>
 			<div>
 				<h1>So, what is this?</h1>
-				<span>A soon to be open source project to assist Game Designers or enthusiasts in the prototyping of card game ideas. With embedded HTML, CSS and JSON editors, multiple examples and tutorials, any person with minimal coding skills can quickly create their own card designs and test their prototype in a playable test environment.</span>
+				<span>An open source project to assist Game Designers or enthusiasts in the prototyping of card game ideas. With embedded HTML, CSS and JSON editors, multiple examples and tutorials, any person with minimal coding skills can quickly create their own card designs and test their prototype in a playable test environment.</span>
 			</div>
 			<br>
 			<hr>
@@ -226,71 +311,112 @@
 				<h1>Can I print the cards instead?</h1>
 				<span>Yes, on <b>Setup</b> at the bottom you have an option to select the cards you want and print them.</span>
 			</div>
+			<br>
+			<hr>
+			<div>
+				<h1>Can I give a suggestion?</h1>
+				<span>I will welcome any in {email here}. Meanwhile here is a list of features that are being analysed, in queue or in development already:</span>
+				<ul>
+					<li>Basic Play Area: Spawn decks and move cards (In development)</li>
+					<li>Option to download a printable cards PDF (Queued)</li>
+					<li>Tutorials and Examples (Queued)</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 
 	<div id = "setup" class = "section">
-		<div class = "container_fluid setup_container">
+		<div class = "container setup_container">
 
-		<!-- Card Template -->
-		<div style="display: flex; border: 0px solid black;">
+			<!-- Card Template -->
 			<div>
-				<h2>Card Template</h2>
-				<div id = "cardTemplateDIV" style = "border: 2px solid black; width: 225px; height: 315px;">
-				
+				<div style = "float: left; margin-right: 10px">
+					<h2>Card Template</h2>
+					<div id = "cardTemplateDIV">
+					
+					</div>
+				</div>
+				<div style = "width: 100%;">
+					<h2>Card Template (HTML)</h2>
+					<div class = "CodeMirror_DIV">
+						<textarea id = "cardTemplateTA"></textarea>
+					</div>
 				</div>
 			</div>
-			<div style = "margin-left: 10px; width: 100%">
-				<h2>Card Template (HTML)</h2>
-				<div class = "CodeMirror_DIV">
-					<textarea id = "cardTemplateTA"></textarea>
-				</div>
-			</div>
-		</div>
 
-		<br>
+			<br>
 
-		<!-- Card Example and JSON -->
-		<div style="display: flex; border: 0px solid black;">
+			<!-- Card Example and JSON -->
 			<div>
-				<div style = "display: flex;">
-					<h2>Card Example</h2>
-					<h2 style = "color: #2A86A8" class = "tooltip">(?)
-						<span class="tooltiptext">The dropdown value uses the card's first key with 'title' included (example: .card_title)</span>
-					</h2>
+				<div style = "float: left; margin-right: 10px">
+					<div style = "display: flex;">
+						<h2>Card Example</h2>
+						<h2 style = "color: #2A86A8" class = "tooltip">(?)
+							<span class="tooltiptext">The dropdown value uses the card's first key with 'title' included (example: .card_title)</span>
+						</h2>
+					</div>
+					<select id = "cardSelect" onchange="OnCardSelectChange(this)">
+					    <option>Card A</option>
+					</select>
+					<div id = "cardExampleDIV"></div>
 				</div>
-				<select id = "cardSelect" onchange="OnCardSelectChange(this)" style="font-size: 1em; width: 100%; height: 2em; border: 2px solid black; border-bottom: none;">
-				    <option>Card A</option>
-				</select>
-				<div id = "cardExampleDIV" style = "border: 2px solid black; width: 225px; height: 315px;">
-				
-				</div>
-			</div>
-			<div style = "margin-left: 10px; width: 100%">
-				<div style = "display: flex;">
-					<h2>Cards JSON</h2>
-					<h2 id = "cardsJSONInvalid" style = "color: red; display: none;">(Invalid)</h2>
-					<!--<button style = "margin-left: 10px; margin-bottom: 5px;" id = "cardsAutoIDBtn" onclick = "GenerateAutoIDs();">Auto IDs</button>-->
-					<!--<div style = "margin-left: 10px; border: 1px solid red; margin-bottom: 5px; display: flex; align-items: center;"><h2>Auto IDs</h2></div>-->
-					<h2 onclick = "GenerateAutoIDs();" id = "cardsAutoIDBtn" style = "">Auto IDs</h2>
-				</div>
-				<div class = "CodeMirror_DIV" style = "height: 347px;">
-					<textarea id = "cardsJSONTA"></textarea>
+				<div style = "width: 100%">
+					<div style = "display: flex;">
+						<h2>Cards JSON</h2>
+						<h2 id = "cardsJSONInvalid" style = "color: red; display: none;">(Invalid)</h2>
+						<h2 onclick = "GenerateAutoIDs();" id = "cardsAutoIDBtn" style = "">Auto IDs</h2>
+					</div>
+					<div class = "CodeMirror_DIV" style = "height: 347px;">
+						<textarea id = "cardsJSONTA"></textarea>
+					</div>
 				</div>
 			</div>
-		</div>
+
+			<br>
+
+			<!-- Decks JSON -->
+			<div>
+				<div style = "width: 100%">
+					<div style = "display: flex;">
+						<h2>Decks JSON</h2>
+						<h2 id = "decksJSONInvalid" style = "color: red; display: none;">(Invalid)</h2>
+					</div>
+					<div class = "CodeMirror_DIV">
+						<textarea id = "decksTA"></textarea>
+					</div>
+				</div>
+			</div>
 
 		</div>
 	</div>
 
 	<div id = "play" class = "section">
-		<div class = "container play_container">
+		<div class = "container_fluid play_container">
+			<div class = "play_background"></div>
+			<!--
 			<div style = "margin-top: 40px; text-align: center;">
 				<h1 style = "color: #FFA92C; margin-bottom: 5px">Project under construction!</h1>
 				<span>Some features may still be under development.</span>
 			</div>
+			-->
 		</div>
 	</div>
+
+	<ul class = "playContextmenu" id="playContextmenu">
+		<!--<li class="playContextmenu_item">
+			Spawn
+			<ul class = "playContextmenu">
+				<li class="playContextmenu_item">
+					Deck
+					<ul class = "playContextmenu">
+						<li class="playContextmenu_item">Deck_A</li>
+						<li class="playContextmenu_item">Deck_B</li>
+					</ul>
+				</li>
+			</ul>
+		</li>-->
+	</ul>
+
 
 </body>
 
@@ -298,6 +424,7 @@
 
 	/* Document Object Models */
 
+	var topbar = document.getElementsByClassName("topbar")[0];
 	var topbar_title = document.getElementsByClassName('topbar_title')[0];
 	var topbar_menus = Array.from(document.getElementsByClassName('topbar_menu'));
 
@@ -311,28 +438,61 @@
 	var cardsJSONInvalid = document.getElementById('cardsJSONInvalid');
 	var cardsAutoIDBtn = document.getElementById('cardsAutoIDBtn');
 	var cardSelect = document.getElementById('cardSelect');
+	var decksTA = document.getElementById('decksTA');
+	var decksJSONInvalid = document.getElementById('decksJSONInvalid');
 
-
+	var playArea = play.querySelector(".play_container");
+	var playContextmenu = document.getElementById('playContextmenu');
 
 	/* Objects */
 
 	var bodyFontSize = parseFloat(getComputedStyle(document.body).fontSize);
+	var topbarHeight = parseFloat(getComputedStyle(topbar).height);
 	var visibleSection = home;
 
 	var setupObj = {
 		init: false,
 		cardTemplateEditor: null,
 		cardsJSONEditor: null,
-		cardsJSON: []
+		decksEditor: null,
+		cardsJSON: [],
+		urlRegex: new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi)
+	}
+
+	var playObj = {
+		playSize: ["200", "200"], //em //var stageSize = ["1000", "562.5"]; //em
+		dragPlayArea: null,
+		contextmenus: {
+			"Spawn" : {
+				"Decks" : {
+					"(Build decks on Setup first!)" : function(){}
+					//"Deck_A" : function(){},
+					//"Deck_B" : function(){}
+				}
+			}
+		}
 	}
 
 	/* Initializations */
 
 	fitText(topbar_title, 1, {minFontSize : bodyFontSize*1.5, maxFontSize : bodyFontSize*2.75});
 	topbar_menus.forEach(menu => {fitText(menu, 1, {minFontSize : bodyFontSize*1.5, maxFontSize : bodyFontSize*2.25});});
-	//OnTopBarMenuClick('setup');
+	SetupInit();
+	PlayAreaInit();
+	//OnTopBarMenuClick('play');
+	window.onresize = OnWindowResize;
 
 	/* Functions */
+
+	(function(){Math.clamp=function(a,b,c){return Math.max(b,Math.min(c,a));}})();
+
+	function OnWindowResize()
+	{
+		if(play.style.display != "none")
+		{
+			playObj.dragPlayArea.ClampPlayArea({x: 0, y: 0});
+		}
+	}
 
 	function OnTopBarMenuHover(element, event)
 	{
@@ -364,58 +524,154 @@
 		}
 	}
 
+			/* Home Functions */
+
 	function LoadHome()
 	{
-		home.style.display = "flex";
+		home.style.display = "block";
 	}
+
+			/* Setup Functions */
 
 	function LoadSetup()
 	{
-		setup.style.display = "flex";
+		setup.style.display = "block";
 
 		if(setupObj.init == false)
 		{
-			setupObj.cardTemplateEditor = CodeMirror.fromTextArea(cardTemplateTA, {
-				lineNumbers: true,
-				mode : "htmlmixed"
-			});
-			setupObj.cardTemplateEditor.setSize("100%", "100%");
-			setupObj.cardTemplateEditor.on("blur", function(){
-				cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
-			});
-			fetch("src/card_template.txt")
-				.then(function(response) {
-					response.text().then(function(text) {
-						setupObj.cardTemplateEditor.setValue(text);
-						cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
-				});
-			});
-
-			setupObj.cardsJSONEditor = CodeMirror.fromTextArea(cardsJSONTA, {
-				lineNumbers: true,
-				mode : {name: "javascript", json: true}
-			});
-			setupObj.cardsJSONEditor.setSize("100%", "100%");
-			setupObj.cardsJSONEditor.on("blur", function(){
-				OnCardsJSONEdit();
-			});
-			fetch("src/card_list.json")
-				.then(function(response) {
-					response.text().then(function(text) {
-						setupObj.cardsJSONEditor.setValue(text);
-						OnCardsJSONEdit();
-				});
-			});
-
-
-
-			setupObj.init = true;
+			SetupInit();
 		}
+
+		setupObj.cardTemplateEditor.refresh();
+		setupObj.cardsJSONEditor.refresh();
+		setupObj.decksEditor.refresh();
 	}
 
-	function LoadPlay()
+	function SetupInit()
 	{
-		play.style.display = "flex";
+		setupObj.cardTemplateEditor = CodeMirror.fromTextArea(cardTemplateTA, {
+			lineNumbers: true,
+			mode : "htmlmixed"
+		});
+		setupObj.cardTemplateEditor.setSize("100%", "100%");
+		setupObj.cardTemplateEditor.on("change", function(){
+			cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+			DisplayExampleCard(cardSelect.selectedIndex);
+		});
+		setupObj.cardTemplateEditor.on("blur", function(){
+			cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+			DisplayExampleCard(cardSelect.selectedIndex);
+		});
+		fetch("src/card_template.txt")
+			.then(function(response) {
+				response.text().then(function(text) {
+					setupObj.cardTemplateEditor.setValue(text);
+					cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+			});
+		});
+
+		setupObj.cardsJSONEditor = CodeMirror.fromTextArea(cardsJSONTA, {
+			lineNumbers: true,
+			mode : {name: "javascript", json: true}
+		});
+		setupObj.cardsJSONEditor.setSize("100%", "100%");
+		setupObj.cardsJSONEditor.on("change", function(){
+			OnCardsJSONEdit();
+		});
+		setupObj.cardsJSONEditor.on("blur", function(){
+			OnCardsJSONEdit();
+		});
+		fetch("src/card_list.json")
+			.then(function(response) {
+				response.text().then(function(text) {
+					setupObj.cardsJSONEditor.setValue(text);
+					OnCardsJSONEdit();
+			});
+		});
+
+		setupObj.decksEditor = CodeMirror.fromTextArea(decksTA, {
+			lineNumbers: true,
+			mode : {name: "javascript", json: true}
+		});
+		setupObj.decksEditor.setSize("100%", "100%");
+		setupObj.decksEditor.on("blur", function(){
+			OnDecksJSONEdit();
+		});
+
+		fetch("src/decks.json")
+			.then(function(response) {
+				response.text().then(function(text) {
+					setupObj.decksEditor.setValue(text);
+					OnDecksJSONEdit();
+			});
+		});
+
+
+		setupObj.init = true;
+	}
+
+	function OnDecksJSONEdit()
+	{
+		var decksObj = setupObj.decksEditor.getValue();
+		
+		var isJSONValid = true;
+
+		try{
+			decksObj = JSON.parse(decksObj);
+
+			for (const [key1, value1] of Object.entries(decksObj))
+			{
+				var breakMainLoop = false;
+
+				if(typeof(value1) != "object"){
+					isJSONValid = false;
+					break;
+				}
+				else
+				{
+					for (const [key2, value2] of Object.entries(decksObj[key1]))
+					{
+						if(typeof(value2) != "number")
+						{
+							isJSONValid = false;
+							breakMainLoop = true;
+							break;
+						}
+					}
+				}
+				
+
+				if(breakMainLoop)
+					break;
+			}
+		}
+		catch (e) {
+			isJSONValid = false;
+		}
+
+		if(isJSONValid == false)
+		{
+			decksObj = {};
+			decksJSONInvalid.style.display = "block";
+		}
+		else
+			decksJSONInvalid.style.display = "none";
+
+		playObj.contextmenus.Spawn.Decks = {};
+
+		var entries = Object.entries(decksObj);
+
+		if(entries.length > 0)
+		{
+			for (const [deck, cards] of entries)
+			{
+				playObj.contextmenus.Spawn.Decks[deck] = function(){};
+			}
+		}
+		else
+			playObj.contextmenus.Spawn.Decks["(Build decks on Setup first!)"] = function(){};
+	
+		BuildPlayContextMenus();
 	}
 
 	function OnCardsJSONEdit()
@@ -443,12 +699,15 @@
 			setupObj.cardsJSON = [];
 			cardsJSONInvalid.style.display = "block";
 			cardsAutoIDBtn.style.display = "none";
+			return;
 		}
 		else
 		{
 			cardsJSONInvalid.style.display = "none";
 			cardsAutoIDBtn.style.display = "block";
 		}
+
+		var currentIndex = cardSelect.selectedIndex;
 
 		cardSelect.options.length = 0;
 		for (var i = 0; i < setupObj.cardsJSON.length; i++)
@@ -471,7 +730,14 @@
 			cardSelect.options.add(option);
 		}
 
-		DisplayExampleCard();
+		if(currentIndex >= 0)
+		{
+			if(currentIndex >= cardSelect.options.length)
+				currentIndex = cardSelect.options.length - 1;
+
+			cardSelect.selectedIndex = currentIndex;
+			DisplayExampleCard(cardSelect.selectedIndex);
+		}
 	}
 
 	function OnCardSelectChange(select)
@@ -487,7 +753,7 @@
 			.then(function(response) {
 				response.text().then(function(text) {
 					setupObj.cardTemplateEditor.setValue(text);
-					DisplayExampleCard();
+					DisplayExampleCard(index);
 				});
 			});
 			return;
@@ -509,8 +775,40 @@
 			var cardObj = setupObj.cardsJSON[index];
 			cardExampleDIV.innerHTML = templateHTML;
 			for (const [key, value] of Object.entries(cardObj)) {
+				/*
 				if(key[0] == "."){
 					cardExampleDIV.getElementsByClassName(key.substr(1))[0].innerHTML = value;
+				}
+				*/
+				var elmnts = [];
+				try{
+					elmnts = Array.from(cardExampleDIV.querySelectorAll("[" + key + "]"));
+				}
+				catch(e){
+					elmnts = [];
+				}
+
+				for (var i = 0; i < elmnts.length; i++) {
+					var elmnt = elmnts[i];
+
+					// Desired category
+					if(elmnt.getAttribute(key) == value)
+					{
+						elmnt.style.display = "block";
+					}
+					// Another category
+					else if(elmnt.getAttribute(key) != "")
+					{
+						elmnt.style.display = "none";
+					}
+					// src URL
+					else if(value.match(setupObj.urlRegex))
+					{
+						elmnt.src = value;
+					}
+					// innerText
+					else
+						elmnt.innerText = value;
 				}
 			}
 		}
@@ -524,6 +822,219 @@
 
 		setupObj.cardsJSONEditor.setValue(JSON.stringify(setupObj.cardsJSON, undefined, 2));
 	}
+
+			/* Play Functions */
+
+	function LoadPlay()
+	{
+		play.style.display = "flex";
+		playObj.dragPlayArea = new DragPlayArea();
+	}
+
+	function BuildPlayContextMenus()
+	{
+		CreatePlayContextMenus();
+		AdjustPlayContextMenus();
+	}
+
+	function CreatePlayContextMenus(menus, dom)
+	{
+		if(menus == null)
+		{
+			playContextmenu.innerHTML = "";
+			menus = playObj.contextmenus;
+			dom = playContextmenu;
+		}
+
+		for (const [key, value] of Object.entries(menus)) {
+
+			var li = document.createElement("li");
+			li.classList.add("playContextmenu_item");
+			li.innerText = key;
+
+			if(typeof(value) == "function")
+			{
+				dom.style.backgroundColor = "#2aa884";
+			}
+			else
+			{
+				var ul = document.createElement("ul");
+				ul.classList.add("playContextmenu");
+				li.appendChild(ul);
+				CreatePlayContextMenus(value, ul);
+			}
+
+			dom.appendChild(li);
+		}
+	}
+
+	function AdjustPlayContextMenus()
+	{
+		var menuItems = Array.from(document.getElementsByClassName("playContextmenu_item"));
+		for (var i = 0; i < menuItems.length; i++) {
+			menuItems[i].onmouseenter = function(e)
+			{
+				var element = e.target;
+				var menu = element.parentElement;
+				var submenu = element.querySelector("ul");
+				if(submenu != null)
+				{
+					var menuWidth = parseFloat(getComputedStyle(menu).width);
+					submenu.style.left = `${menuWidth}px`;
+
+					var index = Array.prototype.indexOf.call(menu.children, element); 
+					var topPercent = (100 / menu.childElementCount) * index;
+					var topOffset = ((100 / menu.childElementCount / 100) * 10 * 2) * index;
+
+					submenu.style.top = "calc(" + topPercent + "% - " + topOffset + "px)";
+					submenu.classList.add('show');
+				}
+			};
+
+			menuItems[i].onmouseleave = function(e)
+			{
+				var element = e.target;
+				var submenus = element.querySelectorAll("ul");
+				submenus.forEach(sm => {sm.classList.remove('show');});
+			}
+		}
+	}
+
+	function PlayAreaInit()
+	{
+		playArea.style.width = playObj.playSize[0]+"em";
+		playArea.style.height = playObj.playSize[1]+"em";
+		playArea.style.left = "calc(50% - " + (playObj.playSize[0]/2) + "em)";
+		playArea.style.top = "calc(50% - " + (playObj.playSize[1]/2) + "em)";
+		playArea.style.transform = "translate(0px, 0px)";
+
+		BuildPlayContextMenus();
+
+		playArea.addEventListener('contextmenu', e => {
+			e.preventDefault()
+
+			playContextmenu.style.top = `${e.clientY}px`;
+			playContextmenu.style.left = `${e.clientX}px`;
+			playContextmenu.classList.add('show');
+		});
+
+		/*
+		var menuItems = Array.from(document.getElementsByClassName("playContextmenu_item"));
+		for (var i = 0; i < menuItems.length; i++) {
+			menuItems[i].onmouseenter = function(e)
+			{
+				var element = e.target;
+				var menu = element.parentElement;
+				var submenu = element.querySelector("ul");
+				if(submenu != null)
+				{
+					var menuWidth = parseFloat(getComputedStyle(menu).width);
+					submenu.style.left = `${menuWidth}px`;
+
+					var index = Array.prototype.indexOf.call(menu.children, element); 
+					var topPercent = (100 / menu.childElementCount) * index;
+					var topOffset = ((100 / menu.childElementCount / 100) * 10 * 2) * index;
+
+					submenu.style.top = "calc(" + topPercent + "% - " + topOffset + "px)";
+					submenu.classList.add('show');
+				}
+			};
+
+			menuItems[i].onmouseleave = function(e)
+			{
+				var element = e.target;
+				var submenus = element.querySelectorAll("ul");
+				submenus.forEach(sm => {sm.classList.remove('show');});
+			}
+		}
+		*/
+
+		document.onmousedown = function(e)
+		{
+			var path = e.path;
+			for (var i = 0; i < path.length; i++) {
+				if("classList" in path[i] && path[i].classList.contains("playContextmenu_item"))
+					return;
+			}
+
+		 	playContextmenu.classList.remove('show');
+		}
+	}
+
+	function DragPlayArea()
+	{
+		var self = this;
+
+		playArea.onmousedown = onmousedown;
+
+		var lastTouch = {x: 0, y: 0}
+
+		var playWidth = parseFloat(window.getComputedStyle(playArea).width);
+		var playHeight = parseFloat(window.getComputedStyle(playArea).height);
+
+		var matrixArray = MatrixToArray(playArea);
+
+		function onmousedown(e) {
+			e = e || window.event;
+			e.preventDefault();
+
+			if(e.button != 0)
+				return;
+
+			lastTouch = {x: e.clientX, y: e.clientY}
+
+			document.onmouseup = onmouseup;
+			document.onmousemove = onmousemove;
+		}
+
+		function onmousemove(e) {
+			e = e || window.event;
+			e.preventDefault();
+
+			var delta = {x: e.clientX - lastTouch.x, y: e.clientY - lastTouch.y }
+			lastTouch = {x: e.clientX, y: e.clientY}
+
+			self.ClampPlayArea(delta);
+		}
+
+		function onmouseup() {
+			/* stop moving when mouse button is released:*/
+			document.onmouseup = null;
+			document.onmousemove = null;
+		}
+
+		self.ClampPlayArea = function(delta)
+		{
+			var widthClamp = Math.abs(((playWidth - play.offsetWidth) / 2) + 0);
+			var heightClamp = Math.abs(((playHeight - play.offsetHeight) / 2) + 0);
+
+			matrixArray[4] = Math.clamp(matrixArray[4] + delta.x, -widthClamp, widthClamp);
+			matrixArray[5] = Math.clamp(matrixArray[5] + delta.y, -heightClamp+(topbarHeight/2), heightClamp+(topbarHeight/2));
+
+			playArea.style.transform = MatrixArrayToStyle(matrixArray);
+		}
+	}
+
+	function MatrixToArray(element)
+	{
+		//matrix(scaleX,skewY,skewX,scaleY,translateX,translateY)
+
+		var style = window.getComputedStyle(element, null);
+		var transform = style.transform;
+		var numberPattern = /-?\d+\.?\d*/g;
+
+		var array = transform.match(numberPattern);
+
+		array = array.map(el => parseFloat(el));
+
+		return array;
+	}
+
+	function MatrixArrayToStyle(matrixArray)
+	{
+		return "translate(" + matrixArray[4] + "px, " + matrixArray[5] + "px)";
+	}
+
 </script>
 
 </html>
