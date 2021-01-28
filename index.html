@@ -9,8 +9,6 @@
 			height: calc(100% - 8px);
 			font-family: monospace;
 			font-size: 16px;
-
-			background-color: #2a86a80a;
 		}
 
 		.tooltip {
@@ -21,10 +19,11 @@
 
 		.tooltip .tooltiptext {
 		  visibility: hidden;
-		  background-color: black;
+		  background-color: #2A86A8;
 		  color: #fff;
 		  text-align: center;
 		  border-radius: 6px;
+		  border: 2px solid black;
 		  padding: 5px 5px;
 		  width: 300px;
 		  font-size: 100%;
@@ -106,6 +105,7 @@
 
 		#home{
 			justify-content: center;
+			background-color: #2a86a80a;
 		}
 
 		.home_container{
@@ -122,6 +122,7 @@
 			justify-content: center;
 			height: calc(100% - 70px);
 			overflow: auto;
+			background-color: #2a86a80a;
 		}
 
 		.setup_container{
@@ -138,6 +139,8 @@
 			border: 2px solid black;
 			width: 225px;
 			height: 315px;
+			background-color: #2A86A8;
+			cursor: default;
 		}
 
 		#setup .CodeMirror_DIV{
@@ -163,6 +166,8 @@
 			border: 2px solid black;
 			width: 225px;
 			height: 315px;
+			background-color: #2A86A8;
+			cursor: default;
 		}
 
 		#cardsJSONInvalid{
@@ -195,7 +200,8 @@
 		.play_container{
 	 		position: fixed;
 			border: 0px solid red;
-			background: radial-gradient(#2a86a80a, #BFDAE5);
+			//background: radial-gradient(#2a86a80a, #BFDAE5);
+			background-color: #BFDAE5;
 		}
 
 		.play_background {
@@ -207,6 +213,13 @@
 			background-repeat: repeat;
 			background-size: 200px;
 			opacity: 0.3;
+		}
+
+		#playCardsPivot
+		{
+			position: absolute;
+		    top: 50%;
+    		left: 50%;
 		}
 
 		.playContextmenu{
@@ -303,19 +316,20 @@
 			<hr>
 			<div>
 				<h1>And how do I start?</h1>
-				<span>On the top of this page you have a navigation bar with two menus. On <b>Setup</b> you can create the card templates, the list of all different cards and the decks you want to prototype. On <b>Play</b> you can spawn the decks you created and test your gameplay.</span>
+				<span>On the top of this page you have a navigation bar with two menus. On <b>Setup</b> you can create the card templates, the list of all different cards and the decks you want to prototype. On <b>Play</b> you can spawn the decks you created and test your gameplay. Right click anywhere on the play area to open the context menu and spaw the decks, and left click on a card to flip it.</span>
 			</div>
 			<br>
 			<hr>
 			<div>
 				<h1>Can I print the cards instead?</h1>
-				<span>Yes, on <b>Setup</b> at the bottom you have an option to select the cards you want and print them.</span>
+				<span>Yes, when available and successfully tested I will add this option at the bottom of the <b>Setup</b> page.</span>
+				<!--<span>Yes, on <b>Setup</b> at the bottom you have an option to select the cards you want and print them.</span>-->
 			</div>
 			<br>
 			<hr>
 			<div>
 				<h1>Can I give a suggestion?</h1>
-				<span>I will welcome any in {email here}. Meanwhile here is a list of features that are being analysed, in queue or in development already:</span>
+				<span>I will provide a contact page soon for this. Meanwhile here is a list of features that are being analysed, in queue or in development already:</span>
 				<ul>
 					<li>Basic Play Area: Spawn decks and move cards (In development)</li>
 					<li>Option to download a printable cards PDF (Queued)</li>
@@ -352,7 +366,7 @@
 					<div style = "display: flex;">
 						<h2>Card Example</h2>
 						<h2 style = "color: #2A86A8" class = "tooltip">(?)
-							<span class="tooltiptext">The dropdown value uses the card's first key with 'title' included (example: .card_title)</span>
+							<span class="tooltiptext">The dropdown value uses the card's first key with 'title' included (example: title, card_title, cardtitle)</span>
 						</h2>
 					</div>
 					<select id = "cardSelect" onchange="OnCardSelectChange(this)">
@@ -393,6 +407,7 @@
 	<div id = "play" class = "section">
 		<div class = "container_fluid play_container">
 			<div class = "play_background"></div>
+			<div id = "playCardsPivot"></div>
 			<!--
 			<div style = "margin-top: 40px; text-align: center;">
 				<h1 style = "color: #FFA92C; margin-bottom: 5px">Project under construction!</h1>
@@ -434,6 +449,7 @@
 
 	var cardTemplateDIV = document.getElementById('cardTemplateDIV');
 	var cardTemplateTA = document.getElementById('cardTemplateTA');
+	var cardExampleDIV = document.getElementById('cardExampleDIV');
 	var cardsJSONTA = document.getElementById('cardsJSONTA');
 	var cardsJSONInvalid = document.getElementById('cardsJSONInvalid');
 	var cardsAutoIDBtn = document.getElementById('cardsAutoIDBtn');
@@ -442,6 +458,7 @@
 	var decksJSONInvalid = document.getElementById('decksJSONInvalid');
 
 	var playArea = play.querySelector(".play_container");
+	var playCardsPivot = document.getElementById('playCardsPivot');
 	var playContextmenu = document.getElementById('playContextmenu');
 
 	/* Objects */
@@ -450,26 +467,34 @@
 	var topbarHeight = parseFloat(getComputedStyle(topbar).height);
 	var visibleSection = home;
 
+	//var cursorXY = {x: 0, y: 0};
+
 	var setupObj = {
 		init: false,
 		cardTemplateEditor: null,
 		cardsJSONEditor: null,
 		decksEditor: null,
 		cardsJSON: [],
+		decksJSON: {},
 		urlRegex: new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi)
 	}
 
 	var playObj = {
 		playSize: ["200", "200"], //em //var stageSize = ["1000", "562.5"]; //em
+		playSizeInPixel: {x:0, y:0}, // calculated on PlayAreaInit
 		dragPlayArea: null,
 		contextmenus: {
 			"Spawn" : {
 				"Decks" : {
-					"(Build decks on Setup first!)" : function(){}
+					"(Build decks on Setup first!)" : function(){console.log("(Build decks on Setup first!)");}
 					//"Deck_A" : function(){},
 					//"Deck_B" : function(){}
 				}
 			}
+		},
+		contextmenusPos : {x: 0, y: 0},
+		mouseSettings : {
+			mouseZeroMode : 'pan', // | select
 		}
 	}
 
@@ -486,11 +511,32 @@
 
 	(function(){Math.clamp=function(a,b,c){return Math.max(b,Math.min(c,a));}})();
 
+	function shuffleArray(array)
+	{
+		var currentIndex = array.length, temporaryValue, randomIndex;
+
+		// While there remain elements to shuffle...
+		while (0 !== currentIndex) {
+
+			// Pick a remaining element...
+			randomIndex = Math.floor(Math.random() * currentIndex);
+			currentIndex -= 1;
+
+			// And swap it with the current element.
+			temporaryValue = array[currentIndex];
+			array[currentIndex] = array[randomIndex];
+			array[randomIndex] = temporaryValue;
+		}
+
+		return array;
+	}
+
 	function OnWindowResize()
 	{
 		if(play.style.display != "none")
 		{
-			playObj.dragPlayArea.ClampPlayArea({x: 0, y: 0});
+			if(playObj.dragPlayArea)
+				playObj.dragPlayArea.ClampPlayArea({x: 0, y: 0});
 		}
 	}
 
@@ -522,6 +568,64 @@
 			visibleSection = play;
 			LoadPlay();
 		}
+	}
+
+	function DrawCard(cardDIV, templateHTML, cardObj, drawCardback = false)
+	{
+		cardDIV.innerHTML = templateHTML;
+
+		var faces = [null, null];
+
+		for (const [key, value] of Object.entries(cardObj)) {
+			/*
+			if(key[0] == "."){
+				cardDIV.getElementsByClassName(key.substr(1))[0].innerHTML = value;
+			}
+			*/
+			var elmnts = [];
+			try{
+				elmnts = Array.from(cardDIV.querySelectorAll("[" + key + "]"));
+			}
+			catch(e){
+				elmnts = [];
+			}
+
+			for (var i = 0; i < elmnts.length; i++) {
+				var elmnt = elmnts[i];
+
+
+				if(drawCardback && elmnt.getAttribute(key) == "cardback")
+				{
+					elmnt.style.display = "block";
+					faces[1] = elmnt;
+				}
+				// Desired category
+				else if(elmnt.getAttribute(key) == value)
+				{
+					if(drawCardback)
+						elmnt.style.display = "none";
+					else
+						elmnt.style.display = "block";
+
+					faces[0] = elmnt;
+				}
+				// Another category
+				else if(elmnt.getAttribute(key) != "")
+				{
+					elmnt.style.display = "none";
+				}
+				// src URL
+				else if(value.match(setupObj.urlRegex))
+				{
+					elmnt.src = value;
+				}
+				// innerText
+				else
+					elmnt.innerText = value;
+			}
+		}
+
+		return faces;
 	}
 
 			/* Home Functions */
@@ -610,16 +714,32 @@
 		setupObj.init = true;
 	}
 
+	function GetTemplateHTML()
+	{
+		var templateHTML = setupObj.cardTemplateEditor.getValue();
+		var split = templateHTML.split("</style>");
+		if(split.length >= 2)
+		{
+			templateHTML = split[1];
+			if(templateHTML[0] == '\n')
+			{
+				templateHTML = templateHTML.replace('\n', "");
+			}
+		}
+
+		return templateHTML;
+	}
+
 	function OnDecksJSONEdit()
 	{
-		var decksObj = setupObj.decksEditor.getValue();
+		var json_s = setupObj.decksEditor.getValue();
 		
 		var isJSONValid = true;
 
 		try{
-			decksObj = JSON.parse(decksObj);
+			setupObj.decksJSON = JSON.parse(json_s);
 
-			for (const [key1, value1] of Object.entries(decksObj))
+			for (const [key1, value1] of Object.entries(setupObj.decksJSON))
 			{
 				var breakMainLoop = false;
 
@@ -629,7 +749,7 @@
 				}
 				else
 				{
-					for (const [key2, value2] of Object.entries(decksObj[key1]))
+					for (const [key2, value2] of Object.entries(setupObj.decksJSON[key1]))
 					{
 						if(typeof(value2) != "number")
 						{
@@ -651,7 +771,7 @@
 
 		if(isJSONValid == false)
 		{
-			decksObj = {};
+			setupObj.decksJSON = {};
 			decksJSONInvalid.style.display = "block";
 		}
 		else
@@ -659,17 +779,17 @@
 
 		playObj.contextmenus.Spawn.Decks = {};
 
-		var entries = Object.entries(decksObj);
+		var entries = Object.entries(setupObj.decksJSON);
 
 		if(entries.length > 0)
 		{
 			for (const [deck, cards] of entries)
 			{
-				playObj.contextmenus.Spawn.Decks[deck] = function(){};
+				playObj.contextmenus.Spawn.Decks[deck] = function(){SpawnDeck(deck); playContextmenu.classList.remove('show');};
 			}
 		}
 		else
-			playObj.contextmenus.Spawn.Decks["(Build decks on Setup first!)"] = function(){};
+			playObj.contextmenus.Spawn.Decks["(Build decks on Setup first!)"] = function(){console.log("(Build decks on Setup first!)")};
 	
 		BuildPlayContextMenus();
 	}
@@ -759,58 +879,13 @@
 			return;
 		}
 
-		var templateHTML = setupObj.cardTemplateEditor.getValue();
-		var split = templateHTML.split("</style>");
-		if(split.length >= 2)
-		{
-			templateHTML = split[1];
-			if(templateHTML[0] == '\n')
-			{
-				templateHTML = templateHTML.replace('\n', "");
-			}
-		}
+		var templateHTML = GetTemplateHTML();
 
 		if(index < setupObj.cardsJSON.length)
 		{
 			var cardObj = setupObj.cardsJSON[index];
-			cardExampleDIV.innerHTML = templateHTML;
-			for (const [key, value] of Object.entries(cardObj)) {
-				/*
-				if(key[0] == "."){
-					cardExampleDIV.getElementsByClassName(key.substr(1))[0].innerHTML = value;
-				}
-				*/
-				var elmnts = [];
-				try{
-					elmnts = Array.from(cardExampleDIV.querySelectorAll("[" + key + "]"));
-				}
-				catch(e){
-					elmnts = [];
-				}
 
-				for (var i = 0; i < elmnts.length; i++) {
-					var elmnt = elmnts[i];
-
-					// Desired category
-					if(elmnt.getAttribute(key) == value)
-					{
-						elmnt.style.display = "block";
-					}
-					// Another category
-					else if(elmnt.getAttribute(key) != "")
-					{
-						elmnt.style.display = "none";
-					}
-					// src URL
-					else if(value.match(setupObj.urlRegex))
-					{
-						elmnt.src = value;
-					}
-					// innerText
-					else
-						elmnt.innerText = value;
-				}
-			}
+			DrawCard(cardExampleDIV, templateHTML, cardObj);
 		}
 	}
 
@@ -855,6 +930,7 @@
 			if(typeof(value) == "function")
 			{
 				dom.style.backgroundColor = "#2aa884";
+				li.onclick = value;
 			}
 			else
 			{
@@ -900,6 +976,52 @@
 		}
 	}
 
+	function SpawnDeck(deckName)
+	{
+		var deck = setupObj.decksJSON[deckName];
+		var templateHTML = GetTemplateHTML();
+
+		var deckArray = [];
+		var count = 0;
+		for (const [cardId, amount] of Object.entries(deck))
+		{
+			var cardObj = setupObj.cardsJSON.find(card => card.card_id == cardId);
+			if(cardObj != null)
+			{
+				for (var i = 0; i < amount; i++)
+				{
+					var cardDIV = document.createElement("div");
+					cardDIV.style.border = "2px solid black";
+					cardDIV.style.backgroundColor = "#2A86A8";
+					cardDIV.style.cursor = "default";
+					cardDIV.style.width = "225px";
+					cardDIV.style.height = "315px";
+					cardDIV.style.position = "absolute";
+					cardDIV.style.left = "-112.5px";
+					cardDIV.style.top = "-157.5px";
+					//cardDIV.style.transform = "translate(" + (playObj.contextmenusPos.x-count/2) + "px," + (playObj.contextmenusPos.y-count/2) + "px) scale(0.5, 0.5)";
+					cardDIV.id = deckName + "_" + count;
+					cardDIV.classList.add("draggableCard");
+
+					var faces = DrawCard(cardDIV, templateHTML, cardObj, true);
+
+					deckArray.push({div: cardDIV, obj: cardObj, faces: faces});
+					count++;
+				}
+			}
+		}
+
+		shuffleArray(deckArray);
+
+		deckArray.forEach(function(element, index){
+			var cardDIV = element.div;
+			var cardObj = element.obj;
+			cardDIV.style.transform = "translate(" + (playObj.contextmenusPos.x-index/2) + "px," + (playObj.contextmenusPos.y-index/2) + "px) scale(0.5, 0.5)";
+			playCardsPivot.appendChild(cardDIV);
+			DragCard(element);
+		});
+	}
+
 	function PlayAreaInit()
 	{
 		playArea.style.width = playObj.playSize[0]+"em";
@@ -907,49 +1029,33 @@
 		playArea.style.left = "calc(50% - " + (playObj.playSize[0]/2) + "em)";
 		playArea.style.top = "calc(50% - " + (playObj.playSize[1]/2) + "em)";
 		playArea.style.transform = "translate(0px, 0px)";
+		playObj.playSizeInPixel.x = parseFloat(getComputedStyle(playArea).width);
+		playObj.playSizeInPixel.y = parseFloat(getComputedStyle(playArea).height);
 
 		BuildPlayContextMenus();
+	}
 
+	function DragPlayArea()
+	{
+		var self = this;
+
+		var lastTouch = {x: 0, y: 0}
+		var playWidth = parseFloat(window.getComputedStyle(playArea).width);
+		var playHeight = parseFloat(window.getComputedStyle(playArea).height);
+		var matrixArray = MatrixToArray(playArea);
+
+		playArea.addEventListener("mousedown", onmousedown);
 		playArea.addEventListener('contextmenu', e => {
-			e.preventDefault()
+			e.preventDefault();
 
 			playContextmenu.style.top = `${e.clientY}px`;
 			playContextmenu.style.left = `${e.clientX}px`;
 			playContextmenu.classList.add('show');
+
+			playObj.contextmenusPos.x = (e.pageX - playArea.offsetLeft - matrixArray[4]) - (playObj.playSizeInPixel.x/2);
+			playObj.contextmenusPos.y = (e.pageY - playArea.offsetTop - matrixArray[5]) - (playObj.playSizeInPixel.y/2);
 		});
-
-		/*
-		var menuItems = Array.from(document.getElementsByClassName("playContextmenu_item"));
-		for (var i = 0; i < menuItems.length; i++) {
-			menuItems[i].onmouseenter = function(e)
-			{
-				var element = e.target;
-				var menu = element.parentElement;
-				var submenu = element.querySelector("ul");
-				if(submenu != null)
-				{
-					var menuWidth = parseFloat(getComputedStyle(menu).width);
-					submenu.style.left = `${menuWidth}px`;
-
-					var index = Array.prototype.indexOf.call(menu.children, element); 
-					var topPercent = (100 / menu.childElementCount) * index;
-					var topOffset = ((100 / menu.childElementCount / 100) * 10 * 2) * index;
-
-					submenu.style.top = "calc(" + topPercent + "% - " + topOffset + "px)";
-					submenu.classList.add('show');
-				}
-			};
-
-			menuItems[i].onmouseleave = function(e)
-			{
-				var element = e.target;
-				var submenus = element.querySelectorAll("ul");
-				submenus.forEach(sm => {sm.classList.remove('show');});
-			}
-		}
-		*/
-
-		document.onmousedown = function(e)
+		document.addEventListener('mousedown', function(e)
 		{
 			var path = e.path;
 			for (var i = 0; i < path.length; i++) {
@@ -958,21 +1064,7 @@
 			}
 
 		 	playContextmenu.classList.remove('show');
-		}
-	}
-
-	function DragPlayArea()
-	{
-		var self = this;
-
-		playArea.onmousedown = onmousedown;
-
-		var lastTouch = {x: 0, y: 0}
-
-		var playWidth = parseFloat(window.getComputedStyle(playArea).width);
-		var playHeight = parseFloat(window.getComputedStyle(playArea).height);
-
-		var matrixArray = MatrixToArray(playArea);
+		});
 
 		function onmousedown(e) {
 			e = e || window.event;
@@ -981,10 +1073,16 @@
 			if(e.button != 0)
 				return;
 
+			var path = e.path;
+				for (var i = 0; i < path.length; i++) {
+					if("classList" in path[i] && path[i].classList.contains("draggableCard"))
+						return;
+				}
+
 			lastTouch = {x: e.clientX, y: e.clientY}
 
-			document.onmouseup = onmouseup;
-			document.onmousemove = onmousemove;
+			document.addEventListener("mouseup", onmouseup);
+			document.addEventListener("mousemove", onmousemove);
 		}
 
 		function onmousemove(e) {
@@ -998,9 +1096,8 @@
 		}
 
 		function onmouseup() {
-			/* stop moving when mouse button is released:*/
-			document.onmouseup = null;
-			document.onmousemove = null;
+			document.removeEventListener("mouseup", onmouseup);
+			document.removeEventListener("mousemove", onmousemove);
 		}
 
 		self.ClampPlayArea = function(delta)
@@ -1012,6 +1109,88 @@
 			matrixArray[5] = Math.clamp(matrixArray[5] + delta.y, -heightClamp+(topbarHeight/2), heightClamp+(topbarHeight/2));
 
 			playArea.style.transform = MatrixArrayToStyle(matrixArray);
+		}
+	}
+
+	function DragCard(element)
+	{
+		var cardDIV = element.div;
+		var cardObj = element.obj;
+		var cardFaces = element.faces;
+		var lastTouch = {x: 0, y: 0}
+		var playWidth = parseFloat(window.getComputedStyle(playArea).width);
+		var playHeight = parseFloat(window.getComputedStyle(playArea).height);
+		var matrixArray = MatrixToArray(cardDIV);
+		var downTimestamp = 0;
+		var isDragging = false;
+
+		cardDIV.addEventListener("mousedown", onmousedown);
+		// Clamp when spawned
+		clampInsidePlayArea({x: 0, y: 0});
+
+		function onmousedown(e) {
+			e = e || window.event;
+			e.preventDefault();
+
+			if(e.button != 0)
+				return;
+
+			downTimestamp = e.timeStamp;
+
+			lastTouch = {x: e.clientX, y: e.clientY}
+
+			document.addEventListener("mouseup", onmouseup);
+			document.addEventListener("mousemove", onmousemove);
+		}
+
+		function onmousemove(e) {
+			e = e || window.event;
+			e.preventDefault();
+
+			var delta = {x: e.clientX - lastTouch.x, y: e.clientY - lastTouch.y }
+			lastTouch = {x: e.clientX, y: e.clientY}
+
+			if(delta.x != 0 || delta.y != 0)
+				isDragging = true;
+
+			clampInsidePlayArea(delta);
+		}
+
+		function onmouseup(e) {
+
+			var deltaTime = (e.timeStamp - downTimestamp) / 1000;
+
+			if(deltaTime < 0.30 && !isDragging)
+				flipCard();
+
+			isDragging = false;
+
+			document.removeEventListener("mouseup", onmouseup);
+			document.removeEventListener("mousemove", onmousemove);
+		}
+
+		function clampInsidePlayArea(delta)
+		{
+			matrixArray[4] = Math.clamp(matrixArray[4] + delta.x, -playWidth/2 + (225/4), playWidth/2 - (225/4) -5);
+			matrixArray[5] = Math.clamp(matrixArray[5] + delta.y, -playHeight/2 + (315/4), playHeight/2 - (315/4) -5);
+
+			cardDIV.style.transform = MatrixArrayToStyle(matrixArray);
+		}
+
+		function flipCard()
+		{
+			if(cardFaces[0].style.display == "none")
+				cardFaces[0].style.display = "block";
+			else
+				cardFaces[0].style.display = "none";
+
+			if(cardFaces[1] != null)
+			{
+				if(cardFaces[1].style.display == "none")
+					cardFaces[1].style.display = "block";
+				else
+					cardFaces[1].style.display = "none";
+			}
 		}
 	}
 
@@ -1032,7 +1211,7 @@
 
 	function MatrixArrayToStyle(matrixArray)
 	{
-		return "translate(" + matrixArray[4] + "px, " + matrixArray[5] + "px)";
+		return "translate(" + matrixArray[4] + "px, " + matrixArray[5] + "px) scale(" + matrixArray[0] + ", " + matrixArray[3] + ")";
 	}
 
 </script>

@@ -132,6 +132,23 @@
     height: 78%;
   }
   
+  [category=cardback]
+  {
+    background-color: #2A86A8;
+  }
+  
+  [cardbackdesign]
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+  }
+  
   [category]{
     position: absolute;
     box-sizing: border-box;
@@ -140,7 +157,7 @@
   }
 </style>
 
-<div category=monster>
+<div category=monster style = "display: none">
     <div title>Name</div>
     <div hp>0 HP</div>
     <div description>Attack</div>
@@ -156,4 +173,10 @@
     <div title-no-edit>Tool</div>
     <div title>Tool name</div>
     <div action>Tool action</div>
+</div>
+
+<div category=cardback>
+  <div cardbackdesign>
+    Card Game Design
+  </div>
 </div>
