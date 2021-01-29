@@ -1,0 +1,366 @@
+[
+  {
+    "category": "cardfront_black",
+    "title": "A of Spades",
+    "rank": "A",
+    "suit": "&spades;",
+    "card_id": "0"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "A of Hearts",
+    "rank": "A",
+    "suit": "&hearts;",
+    "card_id": "1"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "A of Clubs",
+    "rank": "A",
+    "suit": "&clubs;",
+    "card_id": "2"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "A of Diamonds",
+    "rank": "A",
+    "suit": "&diams;",
+    "card_id": "3"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "2 of Spades",
+    "rank": "2",
+    "suit": "&spades;",
+    "card_id": "4"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "2 of Hearts",
+    "rank": "2",
+    "suit": "&hearts;",
+    "card_id": "5"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "2 of Clubs",
+    "rank": "2",
+    "suit": "&clubs;",
+    "card_id": "6"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "2 of Diamonds",
+    "rank": "2",
+    "suit": "&diams;",
+    "card_id": "7"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "3 of Spades",
+    "rank": "3",
+    "suit": "&spades;",
+    "card_id": "8"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "3 of Hearts",
+    "rank": "3",
+    "suit": "&hearts;",
+    "card_id": "9"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "3 of Clubs",
+    "rank": "3",
+    "suit": "&clubs;",
+    "card_id": "10"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "3 of Diamonds",
+    "rank": "3",
+    "suit": "&diams;",
+    "card_id": "11"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "4 of Spades",
+    "rank": "4",
+    "suit": "&spades;",
+    "card_id": "12"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "4 of Hearts",
+    "rank": "4",
+    "suit": "&hearts;",
+    "card_id": "13"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "4 of Clubs",
+    "rank": "4",
+    "suit": "&clubs;",
+    "card_id": "14"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "4 of Diamonds",
+    "rank": "4",
+    "suit": "&diams;",
+    "card_id": "15"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "5 of Spades",
+    "rank": "5",
+    "suit": "&spades;",
+    "card_id": "16"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "5 of Hearts",
+    "rank": "5",
+    "suit": "&hearts;",
+    "card_id": "17"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "5 of Clubs",
+    "rank": "5",
+    "suit": "&clubs;",
+    "card_id": "18"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "5 of Diamonds",
+    "rank": "5",
+    "suit": "&diams;",
+    "card_id": "19"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "6 of Spades",
+    "rank": "6",
+    "suit": "&spades;",
+    "card_id": "20"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "6 of Hearts",
+    "rank": "6",
+    "suit": "&hearts;",
+    "card_id": "21"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "6 of Clubs",
+    "rank": "6",
+    "suit": "&clubs;",
+    "card_id": "22"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "6 of Diamonds",
+    "rank": "6",
+    "suit": "&diams;",
+    "card_id": "23"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "7 of Spades",
+    "rank": "7",
+    "suit": "&spades;",
+    "card_id": "24"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "7 of Hearts",
+    "rank": "7",
+    "suit": "&hearts;",
+    "card_id": "25"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "7 of Clubs",
+    "rank": "7",
+    "suit": "&clubs;",
+    "card_id": "26"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "7 of Diamonds",
+    "rank": "7",
+    "suit": "&diams;",
+    "card_id": "27"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "8 of Spades",
+    "rank": "8",
+    "suit": "&spades;",
+    "card_id": "28"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "8 of Hearts",
+    "rank": "8",
+    "suit": "&hearts;",
+    "card_id": "29"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "8 of Clubs",
+    "rank": "8",
+    "suit": "&clubs;",
+    "card_id": "30"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "8 of Diamonds",
+    "rank": "8",
+    "suit": "&diams;",
+    "card_id": "31"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "9 of Spades",
+    "rank": "9",
+    "suit": "&spades;",
+    "card_id": "32"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "9 of Hearts",
+    "rank": "9",
+    "suit": "&hearts;",
+    "card_id": "33"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "9 of Clubs",
+    "rank": "9",
+    "suit": "&clubs;",
+    "card_id": "34"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "9 of Diamonds",
+    "rank": "9",
+    "suit": "&diams;",
+    "card_id": "35"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "10 of Spades",
+    "rank": "10",
+    "suit": "&spades;",
+    "card_id": "36"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "10 of Hearts",
+    "rank": "10",
+    "suit": "&hearts;",
+    "card_id": "37"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "10 of Clubs",
+    "rank": "10",
+    "suit": "&clubs;",
+    "card_id": "38"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "10 of Diamonds",
+    "rank": "10",
+    "suit": "&diams;",
+    "card_id": "39"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "Jack of Spades",
+    "rank": "J",
+    "suit": "&spades;",
+    "card_id": "40"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "Jack of Hearts",
+    "rank": "J",
+    "suit": "&hearts;",
+    "card_id": "41"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "Jack of Clubs",
+    "rank": "J",
+    "suit": "&clubs;",
+    "card_id": "42"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "Jack of Diamonds",
+    "rank": "J",
+    "suit": "&diams;",
+    "card_id": "43"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "Queen of Spades",
+    "rank": "Q",
+    "suit": "&spades;",
+    "card_id": "44"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "Queen of Hearts",
+    "rank": "Q",
+    "suit": "&hearts;",
+    "card_id": "45"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "Queen of Clubs",
+    "rank": "Q",
+    "suit": "&clubs;",
+    "card_id": "46"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "Queen of Diamonds",
+    "rank": "Q",
+    "suit": "&diams;",
+    "card_id": "47"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "King of Spades",
+    "rank": "K",
+    "suit": "&spades;",
+    "card_id": "48"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "King of Hearts",
+    "rank": "K",
+    "suit": "&hearts;",
+    "card_id": "49"
+  },
+  {
+    "category": "cardfront_black",
+    "title": "King of Clubs",
+    "rank": "K",
+    "suit": "&clubs;",
+    "card_id": "50"
+  },
+  {
+    "category": "cardfront_red",
+    "title": "King of Diamonds",
+    "rank": "K",
+    "suit": "&diams;",
+    "card_id": "51"
+  }
+]

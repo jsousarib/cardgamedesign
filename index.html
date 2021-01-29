@@ -2,12 +2,13 @@
 <html>
 <head>
 	<title></title>
+ 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="src/js/codemirror-5.59.1/lib/codemirror.css">
 	<style type="text/css">
 		html, body
 		{
 			height: calc(100% - 8px);
-			font-family: monospace;
+			font-family: Consolas;
 			font-size: 16px;
 		}
 
@@ -105,6 +106,8 @@
 
 		#home{
 			justify-content: center;
+			height: calc(100% - 70px);
+			overflow: auto;
 			background-color: #2a86a80a;
 		}
 
@@ -306,7 +309,7 @@
 		<div class = "container home_container">
 			<div style = "margin-top: 40px; text-align: center;">
 				<h1 style = "color: #FFA92C; margin-bottom: 5px">Project under construction!</h1>
-				<span>Some features may still be under development.</span>
+				<span>Some features may still be under development</span>
 			</div>
 			<div>
 				<h1>So, what is this?</h1>
@@ -370,7 +373,7 @@
 						</h2>
 					</div>
 					<select id = "cardSelect" onchange="OnCardSelectChange(this)">
-					    <option>Card A</option>
+					    <!--<option>Card A</option>-->
 					</select>
 					<div id = "cardExampleDIV"></div>
 				</div>
@@ -473,7 +476,7 @@
 		init: false,
 		cardTemplateEditor: null,
 		cardsJSONEditor: null,
-		decksEditor: null,
+		decksJSONEditor: null,
 		cardsJSON: [],
 		decksJSON: {},
 		urlRegex: new RegExp(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi)
@@ -486,7 +489,7 @@
 		contextmenus: {
 			"Spawn" : {
 				"Decks" : {
-					"(Build decks on Setup first!)" : function(){console.log("(Build decks on Setup first!)");}
+					"(Build decks on Setup first!)" : function(){}
 					//"Deck_A" : function(){},
 					//"Deck_B" : function(){}
 				}
@@ -574,6 +577,9 @@
 	{
 		cardDIV.innerHTML = templateHTML;
 
+		if(cardObj == null)
+			return;
+
 		var faces = [null, null];
 
 		for (const [key, value] of Object.entries(cardObj)) {
@@ -621,7 +627,7 @@
 				}
 				// innerText
 				else
-					elmnt.innerText = value;
+					elmnt.innerHTML = value;
 			}
 		}
 
@@ -648,32 +654,22 @@
 
 		setupObj.cardTemplateEditor.refresh();
 		setupObj.cardsJSONEditor.refresh();
-		setupObj.decksEditor.refresh();
+		setupObj.decksJSONEditor.refresh();
 	}
 
 	function SetupInit()
 	{
+		// Init Card Template Editor
 		setupObj.cardTemplateEditor = CodeMirror.fromTextArea(cardTemplateTA, {
 			lineNumbers: true,
 			mode : "htmlmixed"
 		});
-		setupObj.cardTemplateEditor.setSize("100%", "100%");
+		setupObj.cardTemplateEditor.setSize("100%", "100%");		
 		setupObj.cardTemplateEditor.on("change", function(){
-			cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
-			DisplayExampleCard(cardSelect.selectedIndex);
-		});
-		setupObj.cardTemplateEditor.on("blur", function(){
-			cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
-			DisplayExampleCard(cardSelect.selectedIndex);
-		});
-		fetch("src/card_template.txt")
-			.then(function(response) {
-				response.text().then(function(text) {
-					setupObj.cardTemplateEditor.setValue(text);
-					cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
-			});
+			OnCardTemplateEdit();
 		});
 
+		// Init Cards JSON Editor
 		setupObj.cardsJSONEditor = CodeMirror.fromTextArea(cardsJSONTA, {
 			lineNumbers: true,
 			mode : {name: "javascript", json: true}
@@ -682,34 +678,38 @@
 		setupObj.cardsJSONEditor.on("change", function(){
 			OnCardsJSONEdit();
 		});
-		setupObj.cardsJSONEditor.on("blur", function(){
-			OnCardsJSONEdit();
-		});
-		fetch("src/card_list.json")
-			.then(function(response) {
-				response.text().then(function(text) {
-					setupObj.cardsJSONEditor.setValue(text);
-					OnCardsJSONEdit();
-			});
-		});
 
-		setupObj.decksEditor = CodeMirror.fromTextArea(decksTA, {
+		// Init Decks JSON Editor
+		setupObj.decksJSONEditor = CodeMirror.fromTextArea(decksTA, {
 			lineNumbers: true,
 			mode : {name: "javascript", json: true}
 		});
-		setupObj.decksEditor.setSize("100%", "100%");
-		setupObj.decksEditor.on("blur", function(){
+		setupObj.decksJSONEditor.setSize("100%", "100%");
+		setupObj.decksJSONEditor.on("blur", function(){
 			OnDecksJSONEdit();
 		});
 
-		fetch("src/decks.json")
+		fetch("src/card52_template.txt")
 			.then(function(response) {
 				response.text().then(function(text) {
-					setupObj.decksEditor.setValue(text);
-					OnDecksJSONEdit();
+					setupObj.cardTemplateEditor.setValue(text);
 			});
 		});
 
+		fetch("src/card52_list.json")
+			.then(function(response) {
+				response.text().then(function(text) {
+					setupObj.cardsJSONEditor.setValue(text);
+			});
+		});
+
+		fetch("src/deck52.json")
+			.then(function(response) {
+				response.text().then(function(text) {
+					setupObj.decksJSONEditor.setValue(text);
+					OnDecksJSONEdit(); //called manually here because only has 'blur' event listener
+			});
+		});
 
 		setupObj.init = true;
 	}
@@ -730,9 +730,15 @@
 		return templateHTML;
 	}
 
+	function OnCardTemplateEdit()
+	{
+		cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+		DisplayExampleCard(cardSelect.selectedIndex);
+	}
+
 	function OnDecksJSONEdit()
 	{
-		var json_s = setupObj.decksEditor.getValue();
+		var json_s = setupObj.decksJSONEditor.getValue();
 		
 		var isJSONValid = true;
 
@@ -789,7 +795,7 @@
 			}
 		}
 		else
-			playObj.contextmenus.Spawn.Decks["(Build decks on Setup first!)"] = function(){console.log("(Build decks on Setup first!)")};
+			playObj.contextmenus.Spawn.Decks["(Build decks on Setup first!)"] = function(){};
 	
 		BuildPlayContextMenus();
 	}
@@ -819,7 +825,7 @@
 			setupObj.cardsJSON = [];
 			cardsJSONInvalid.style.display = "block";
 			cardsAutoIDBtn.style.display = "none";
-			return;
+			//return;
 		}
 		else
 		{
@@ -827,7 +833,7 @@
 			cardsAutoIDBtn.style.display = "block";
 		}
 
-		var currentIndex = cardSelect.selectedIndex;
+		var currentIndex = Math.clamp(cardSelect.selectedIndex, 0, cardSelect.length - 1);
 
 		cardSelect.options.length = 0;
 		for (var i = 0; i < setupObj.cardsJSON.length; i++)
@@ -850,14 +856,8 @@
 			cardSelect.options.add(option);
 		}
 
-		if(currentIndex >= 0)
-		{
-			if(currentIndex >= cardSelect.options.length)
-				currentIndex = cardSelect.options.length - 1;
-
-			cardSelect.selectedIndex = currentIndex;
-			DisplayExampleCard(cardSelect.selectedIndex);
-		}
+		cardSelect.selectedIndex = currentIndex;
+		DisplayExampleCard(cardSelect.selectedIndex);
 	}
 
 	function OnCardSelectChange(select)
@@ -867,26 +867,13 @@
 
 	function DisplayExampleCard(index = 0)
 	{
-		if(setupObj.cardTemplateEditor.getValue() == "")
-		{
-			fetch("src/card_template.txt")
-			.then(function(response) {
-				response.text().then(function(text) {
-					setupObj.cardTemplateEditor.setValue(text);
-					DisplayExampleCard(index);
-				});
-			});
-			return;
-		}
-
 		var templateHTML = GetTemplateHTML();
+		var cardObj = null;
 
-		if(index < setupObj.cardsJSON.length)
-		{
-			var cardObj = setupObj.cardsJSON[index];
+		if(index >= 0 && index < setupObj.cardsJSON.length)
+			cardObj = setupObj.cardsJSON[index];
 
-			DrawCard(cardExampleDIV, templateHTML, cardObj);
-		}
+		DrawCard(cardExampleDIV, templateHTML, cardObj);
 	}
 
 	function GenerateAutoIDs()
@@ -1016,7 +1003,7 @@
 		deckArray.forEach(function(element, index){
 			var cardDIV = element.div;
 			var cardObj = element.obj;
-			cardDIV.style.transform = "translate(" + (playObj.contextmenusPos.x-index/2) + "px," + (playObj.contextmenusPos.y-index/2) + "px) scale(0.5, 0.5)";
+			cardDIV.style.transform = "translate(" + (playObj.contextmenusPos.x-index/2.5) + "px," + (playObj.contextmenusPos.y-index/2.5) + "px) scale(0.5, 0.5)";
 			playCardsPivot.appendChild(cardDIV);
 			DragCard(element);
 		});
@@ -1057,7 +1044,13 @@
 		});
 		document.addEventListener('mousedown', function(e)
 		{
-			var path = e.path;
+			var path = [];
+
+			if(e.path)
+				path = e.path;
+			else if(e.composedPath())
+				path = e.composedPath();
+
 			for (var i = 0; i < path.length; i++) {
 				if("classList" in path[i] && path[i].classList.contains("playContextmenu_item"))
 					return;
@@ -1073,11 +1066,17 @@
 			if(e.button != 0)
 				return;
 
-			var path = e.path;
-				for (var i = 0; i < path.length; i++) {
-					if("classList" in path[i] && path[i].classList.contains("draggableCard"))
-						return;
-				}
+			var path = [];
+
+			if(e.path)
+				path = e.path;
+			else if(e.composedPath())
+				path = e.composedPath();
+
+			for (var i = 0; i < path.length; i++) {
+				if("classList" in path[i] && path[i].classList.contains("draggableCard"))
+					return;
+			}
 
 			lastTouch = {x: e.clientX, y: e.clientY}
 
