@@ -1,5 +1,44 @@
 <style>
-  [category=monster] [title]{
+  [category]
+  {
+    position: absolute;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+  }
+  
+  [frontface],
+  [backface]
+  {
+    visibility: hidden;
+  }
+  
+  [frontface]
+  {
+    position: absolute;
+    border: 0px solid red;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+  }
+  
+  [backface]
+  {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+    background-color: #2A86A8;
+  }
+  
+  [monster] [title]
+  {
     position: absolute;
     display: flex;
     justify-content: flex-start;
@@ -18,7 +57,8 @@
     cursor: default;
   }
   
-  [category=monster] [hp]{
+  [monster] [hp]
+  {
     position: absolute;
     display: flex;
     justify-content: flex-end;
@@ -36,7 +76,8 @@
     cursor: default;
   }
   
-  [category=monster] [description], [category=tool] [action]{
+  [monster] [description], [tool] [action]
+  {
     position: absolute;
     display: flex;
     justify-content: center;
@@ -54,12 +95,12 @@
     cursor: default;
   }
   
-  [category=essence]
+  [essence]
   {
     background: white;
   }
   
-  [category=essence] [title-no-edit], [category=tool] [title-no-edit]{
+  [essence] [title-no-edit], [tool] [title-no-edit]{
     position: absolute;
     display: flex;
     justify-content: flex-start;
@@ -78,7 +119,8 @@
     cursor: default;
   }
   
-  [category=essence] [symbol]{
+  [essence] [symbol]
+  {
     position: absolute;
     display: flex;
     justify-content: flex-end;
@@ -95,7 +137,8 @@
     cursor: default;
   }
   
-  [category=essence] [image]{
+  [essence] [image]
+  {
     position: absolute;
     box-sizing: border-box;
     top: 12%;
@@ -103,11 +146,13 @@
     width: 100%;
   }
   
-  [category=tool] [title-no-edit]{
+  [tool] [title-no-edit]
+  {
     justify-content: center;
   }
   
-  [category=tool] [title]{
+  [tool] [title]
+  {
     position: absolute;
     display: flex;
     padding-left: 10px;
@@ -126,57 +171,39 @@
     cursor: default;
   }
   
-  [category=tool] [action]
+  [tool] [action]
   {
     top: 22%;
     height: 78%;
   }
   
-  [category=cardback]
+  [category=cardback] [backface],
+  [category=monster] [monster],
+  [category=essence] [essence], 
+  [category=tool] [tool]
   {
-    background-color: #2A86A8;
+    visibility: visible;
   }
   
-  [cardbackdesign]
-  {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    color: white;
-    font-weight: bold;
-    font-size: 50px;
-    text-align: center;
-  }
-  
-  [category]{
-    position: absolute;
-    box-sizing: border-box;
-    width: 100%;
-    height: 100%;
-  }
 </style>
 
-<div category=monster style = "display: none">
+<div category=monster>
+  <div frontface monster>
     <div title>Name</div>
     <div hp>0 HP</div>
     <div description>Attack</div>
-</div>
-
-<div category=essence style = "display: none">
+  </div>
+  <div frontface essence>
     <div title-no-edit>Essence</div>
     <div symbol>[F]</div>
     <img image src="src/fullimage.png">
-</div>
-
-<div category=tool style = "display: none">
+  </div>
+  <div frontface tool>
     <div title-no-edit>Tool</div>
     <div title>Tool name</div>
     <div action>Tool action</div>
-</div>
-
-<div category=cardback>
-  <div cardbackdesign>
+  </div>
+  <div backface>
     Card Game Design
   </div>
 </div>

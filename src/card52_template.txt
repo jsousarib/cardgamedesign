@@ -5,16 +5,27 @@
     box-sizing: border-box;
     width: 100%;
     height: 100%;
+  }
+  
+  [frontface],
+  [backface]
+  {
+    visibility: hidden;
+  }
+  
+  [frontface]
+  {
+    position: absolute;
+    border: 0px solid red;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
     background-color: white;
   }
   
-  [category=cardback]
+  [backface]
   {
-    background-color: #2A86A8;
-  }
-  
-  [cardbackdesign]
-  {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -56,46 +67,51 @@
     border: 0px solid black;
     font-size: 300%;
   }
-  [corner] div:nth-child(1) {  }
-  [corner] div:nth-child(2) {  }
   
   [inverted]
   {
     transform-origin: 166% 166%;
     transform: rotateZ(180deg);
   }
+
+  [category=cardback] [backface],
+  [category=hearts] [frontface],
+  [category=diamonds] [frontface], 
+  [category=spades] [frontface],
+  [category=clubs] [frontface]
+  {
+    visibility: visible;
+  }
   
-  [black]{color:black;}
-  [red]{color:red;}
+  [category=hearts], [category=diamonds]
+  { color: red; }
+  [category=spades], [category=clubs]
+  { color: black; }
+  
+  [category=hearts] [suit]::after
+  { content: "\2665"; }
+  [category=spades] [suit]::after
+  { content: "\2660"; }
+  [category=clubs] [suit]::after
+  { content: "\2663"; }
+  [category=diamonds] [suit]::after
+  { content: "\2666"; }
   
 </style>
 
-<div black category=cardfront_black style = "display: none">
-  <div corner>
-    <div rank>10</div>
-    <div suit>&hearts;</div>
+<div category=hearts>
+  <div frontface>
+    <div corner>
+      <div rank>10</div>
+      <div suit></div>
+    </div>
+    <div suit middle></div>
+    <div corner inverted>
+      <div rank>10</div>
+      <div suit></div>
+    </div>
   </div>
-  <div suit middle>&hearts;</div>
-  <div corner inverted>
-    <div rank>10</div>
-    <div suit>&hearts;</div>
-  </div>
-</div>
-
-<div red category=cardfront_red style = "display: none">
-  <div corner>
-    <div rank>10</div>
-    <div suit>&hearts;</div>
-  </div>
-  <div suit middle>&hearts;</div>
-  <div corner inverted>
-    <div rank>10</div>
-    <div suit>&hearts;</div>
-  </div>
-</div>
-
-<div category=cardback>
-  <div cardbackdesign>
+  <div backface>
     Card Game Design
   </div>
 </div>

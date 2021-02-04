@@ -40,6 +40,25 @@
 		  transition-delay: 0.3s;
 		}
 
+		.menu_link
+		{
+			cursor: pointer;
+		}
+		.menu_link:hover
+		{
+			color: #2A86A8;
+		}
+
+		.disable-select {
+			user-select: none; /* supported by Chrome and Opera */
+			-webkit-user-select: none; /* Safari */
+			-khtml-user-select: none; /* Konqueror HTML */
+			-moz-user-select: none; /* Firefox */
+			-ms-user-select: none; /* Internet Explorer/Edge */
+		}
+
+		/* Topbar */
+
 		.topbar{
 			position: fixed;
 			display: flex;
@@ -75,6 +94,8 @@
 			cursor: pointer;
 		}
 
+		/* Sections and Containers */
+
 		.section{
 			display: block;
 			position: absolute;
@@ -100,9 +121,11 @@
 			width: 100%;
 		}
 
-		#setup, #play{
+		#setup, #play, #help{
 			display: none;
 		}
+
+		/* Home section */
 
 		#home{
 			justify-content: center;
@@ -117,9 +140,11 @@
 		}
 
 		.home_container span, .home_container li{
-			font-size: 1.1em;
+			font-size: 1.1rem;
 		  	line-height: 1.4;
 		}
+
+		/* Setup section */
 
 		#setup{
 			justify-content: center;
@@ -144,6 +169,26 @@
 			height: 315px;
 			background-color: #2A86A8;
 			cursor: default;
+		}
+
+		.exampleH2Div
+		{
+			display: flex;
+			overflow-x: auto;
+		}
+		.exampleH2Div::-webkit-scrollbar {
+		    width: 0px;  /* Remove scrollbar space */
+		    height: 0px;
+		    background: transparent;  /* Optional: just make scrollbar invisible */
+		}
+		.exampleH2
+		{
+			padding-left: 10px;
+			cursor: pointer;
+		}
+		.exampleH2:hover
+		{
+			color: #2A86A8;
 		}
 
 		#setup .CodeMirror_DIV{
@@ -177,24 +222,11 @@
 			margin-left: 10px!important;
 		}
 
-		#cardsAutoIDBtn{
-			margin-left: 10px!important;
-			padding: 5px;
-			margin-top: -5px!important;
-			margin-bottom: 5px!important;
-			border-radius: 5px;
-			background-color: #2A86A8;
-			color: white;
-			cursor: pointer;
-		}
-
-		#cardsAutoIDBtn:hover{
-			background-color: #267897;
-		}
-
 		#decksJSONInvalid{
 			margin-left: 10px!important;
 		}
+
+		/* Play section */
 
 		#play{
 		
@@ -260,6 +292,75 @@
 			cursor: pointer;
 		}
 
+		/* Help section */
+
+		#help{
+			justify-content: center;
+			height: calc(100% - 70px);
+			overflow: auto;
+			background-color: #2a86a80a;
+		}
+
+		.help_container{
+			padding: 30px 20px 20px 20px;
+ 			text-align: justify;
+		}
+
+		.help_container span {
+			font-size: 1.1rem;
+		  	line-height: 1.4;
+		}
+
+		.help_container li {
+			font-size: 1.3rem;
+		  	line-height: 1.4;
+		}
+
+		#help ol {
+			counter-reset: item;
+			list-style-type: none;
+			list-style-position: inside;
+		}
+
+		#help ol li::before {
+			counter-increment: item;
+			content: counters(item, ".") ". ";
+		}
+
+		#help ol.helpSection{
+			padding: 0;
+		}
+
+		#help ol a{
+			text-decoration: none;
+			color: inherit;
+		}
+
+		#help ol a:hover{
+			color: #2A86A8;
+		}
+
+		.help_list{
+			list-style-type: disc;
+		}
+
+		.help_list li{
+			font-size: inherit;
+		}
+
+		.help_list li::before{
+			counter-increment: none!important;
+			content: none!important;
+		}
+
+		pre.prettyprint{
+			margin: 0;
+			overflow-x: auto;
+			padding: 10px!important;
+			background-color: white;
+			border: 2px solid grey;
+		}
+
 		// Small devices (landscape phones, 576px and up)
 		@media (min-width: 576px) {
 			.container{
@@ -287,7 +388,6 @@
 				max-width: 1140px;
 			}
 		}
-
 	</style>
  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
  	<script src="src/js/fittext.js"></script>
@@ -296,13 +396,15 @@
 	<script src="src/js/codemirror-5.59.1/mode/javascript/javascript.js"></script>
 	<script src="src/js/codemirror-5.59.1/mode/css/css.js"></script>
 	<script src="src/js/codemirror-5.59.1/mode/htmlmixed/htmlmixed.js"></script>
+	<script src="src/js/run_prettify.js"></script>
 </head>
 <body>
 
-	<div class = "topbar">
+	<div class = "topbar disable-select">
 		<div onclick="OnTopBarMenuClick('home')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_title">Card Game Design</div>
 		<div onclick="OnTopBarMenuClick('setup')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_menu">Setup</div>
 		<div onclick="OnTopBarMenuClick('play')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_menu">Play</div>
+		<div onclick="OnTopBarMenuClick('help')" onmouseover="OnTopBarMenuHover(this, 'in')" onmouseleave ="OnTopBarMenuHover(this, 'out')" class = "topbar_menu">Help</div>
 	</div>
 
 	<div id = "home" class = "section">
@@ -319,13 +421,13 @@
 			<hr>
 			<div>
 				<h1>And how do I start?</h1>
-				<span>On the top of this page you have a navigation bar with two menus. On <b>Setup</b> you can create the card templates, the list of all different cards and the decks you want to prototype. On <b>Play</b> you can spawn the decks you created and test your gameplay. Right click anywhere on the play area to open the context menu and spaw the decks, and left click on a card to flip it.</span>
+				<span>On the top of this page you have a navigation bar with three menus. On <b class = "menu_link" onclick="OnTopBarMenuClick('setup')">Setup</b> you can create the card templates, the list of all different cards and the decks you want to prototype. On <b class = "menu_link" onclick="OnTopBarMenuClick('play')">Play</b> you can spawn the decks you created and test your gameplay: right click anywhere on the play area to open a context menu and spawn the decks, drag any card to move it and left click to flip it. You can visit <b class = "menu_link" onclick="OnTopBarMenuClick('help')">Help</b> for more information and examples.</span>
 			</div>
 			<br>
 			<hr>
 			<div>
 				<h1>Can I print the cards instead?</h1>
-				<span>Yes, when available and successfully tested I will add this option at the bottom of the <b>Setup</b> page.</span>
+				<span>Yes, when available and successfully tested I will add this option at the bottom of the <b class = "menu_link" onclick="OnTopBarMenuClick('setup')">Setup</b> page.</span>
 				<!--<span>Yes, on <b>Setup</b> at the bottom you have an option to select the cards you want and print them.</span>-->
 			</div>
 			<br>
@@ -335,6 +437,7 @@
 				<span>I will provide a contact page soon for this. Meanwhile here is a list of features that are being analysed, in queue or in development already:</span>
 				<ul>
 					<li>Basic Play Area: Spawn decks and move cards (In development)</li>
+					<li>Help section (In development)</li>
 					<li>Option to download a printable cards PDF (Queued)</li>
 					<li>Tutorials and Examples (Queued)</li>
 				</ul>
@@ -353,8 +456,11 @@
 					
 					</div>
 				</div>
-				<div style = "width: 100%;">
-					<h2>Card Template (HTML)</h2>
+				<div style = "width: 100%;" class = "disable-select">
+					<div style = "display: flex;">
+						<h2>(CSS/HTML)</h2>
+						<div class = "exampleH2Div"></div>
+					</div>
 					<div class = "CodeMirror_DIV">
 						<textarea id = "cardTemplateTA"></textarea>
 					</div>
@@ -372,16 +478,13 @@
 							<span class="tooltiptext">The dropdown value uses the card's first key with 'title' included (example: title, card_title, cardtitle)</span>
 						</h2>
 					</div>
-					<select id = "cardSelect" onchange="OnCardSelectChange(this)">
-					    <!--<option>Card A</option>-->
-					</select>
+					<select id = "cardSelect" onchange="OnCardSelectChange(this)"></select>
 					<div id = "cardExampleDIV"></div>
 				</div>
 				<div style = "width: 100%">
 					<div style = "display: flex;">
-						<h2>Cards JSON</h2>
+						<h2>(JSON)</h2>
 						<h2 id = "cardsJSONInvalid" style = "color: red; display: none;">(Invalid)</h2>
-						<h2 onclick = "GenerateAutoIDs();" id = "cardsAutoIDBtn" style = "">Auto IDs</h2>
 					</div>
 					<div class = "CodeMirror_DIV" style = "height: 347px;">
 						<textarea id = "cardsJSONTA"></textarea>
@@ -395,7 +498,7 @@
 			<div>
 				<div style = "width: 100%">
 					<div style = "display: flex;">
-						<h2>Decks JSON</h2>
+						<h2>Decks (JSON)</h2>
 						<h2 id = "decksJSONInvalid" style = "color: red; display: none;">(Invalid)</h2>
 					</div>
 					<div class = "CodeMirror_DIV">
@@ -411,30 +514,130 @@
 		<div class = "container_fluid play_container">
 			<div class = "play_background"></div>
 			<div id = "playCardsPivot"></div>
-			<!--
-			<div style = "margin-top: 40px; text-align: center;">
-				<h1 style = "color: #FFA92C; margin-bottom: 5px">Project under construction!</h1>
-				<span>Some features may still be under development.</span>
-			</div>
-			-->
 		</div>
 	</div>
 
-	<ul class = "playContextmenu" id="playContextmenu">
-		<!--<li class="playContextmenu_item">
-			Spawn
-			<ul class = "playContextmenu">
-				<li class="playContextmenu_item">
-					Deck
-					<ul class = "playContextmenu">
-						<li class="playContextmenu_item">Deck_A</li>
-						<li class="playContextmenu_item">Deck_B</li>
-					</ul>
+	<div id = "help" class = "section">
+		<div class = "container help_container">
+			<ol>
+				<li><a href = "#hs_setup">Setup</a>
+					<ol>
+						<li><a href = "#hs_cardtemplate">Card template</a></li>
+						<li><a href = "#hs_listofcards">List of cards</a></li>
+						<li><a href = "#hs_buildingdecks">Building decks</a></li>
+					</ol>
 				</li>
-			</ul>
-		</li>-->
-	</ul>
+				<li><a href = "#hs_play">Play</a>
+					<ol>
+						<li><a href = "#hs_playarea">Play area</a></li>
+						<li><a href = "#hs_contextmenu">Context menu</a></li>
+					</ol>
+				</li>
+				<li><a href = "#hs_examples">Examples</a>
+					<ol>
+						<li><a href = "#hs_example1">Example #1</a></li>
+						<li><a href = "#hs_example2">Example #2</a></li>
+					</ol>
+				</li>
+			</ol>
+			<br>
+			<hr id = "hs_setup">
 
+			<ol class = "helpSection">
+
+				<li>Setup
+					<br>
+					<span>When you have that awesome card game idea on your mind, this is where you start. First you design both front and back faces of the card template, then you create a list with all the cards you want to prototype and finally one or multiple decks to test your gameplay later.</span>
+					<br>
+					<ol class = "helpSection">
+						<br id = "hs_cardtemplate">
+						<li>Card template
+							<br>
+							<span>You can visualize this section at the top of the <b class = "menu_link" onclick="OnTopBarMenuClick('setup')">Setup</b> page, and it is divided into two elements: the template of the cards you want to design and the text editor that modifies the template in real time. This editor receives any combination of HTML and CSS to help you design the template, but it requires some rules in order for the cards to be sucessfully displayed and manipulated in the <b class = "menu_link" onclick="OnTopBarMenuClick('play')">Play</b> area:
+							<ul class = "help_list">
+								<li>The whole HTML of the card template must be inside of a single <span class = "tag"><b>&#60;div&#62;</b></span> element. The CSS can be placed anywhere (before, inside or after this element).</li>
+								<li>The first and required <span class = "atn"><b>attribute</b></span>=<span class = "atv"><b>value</b></span> of this element is the definition of the card's layout and it can be used to simply distinguish the front and back face or more complex types/categories of cards.</li>
+								<li>The name and all values of this attribute are defined by you, except the <span class = "atv"><b>cardback</b></span> value which is specifically reserved for the back face of the designed cards, so if you want to style it you must use this keyword in your CSS.</li>
+							</ul>
+							<br>
+							<pre id = "help_codeblock_1" class="prettyprint"></pre>
+							<br>
+							The control of what elements of the template are visible, when applying the information of a card or switching between front and back faces, is all done through the CSS and the chosen first <span class = "atn"><b>attribute</b></span> of the main <span class = "tag"><b>&#60;div&#62;</b></span> element. The <span class = "atv"><b>value</b></span> of this <span class = "atn"><b>attribute</b></span> will change dynamically when a card is being displayed or fliped, so the template's CSS should use it to rule what to show and what to hide. One easy way to do this is to hide the visibility of all the elements by default and only show the ones related to the chosen layout. In the following example both <span class = "atn"><b>front</b></span> and <span class = "atn"><b>back</b></span> attributes are hidden and the <span class = "atn"><b>front</b></span> is only visible when <span class = "atn"><b>face</b></span>=<span class = "atv"><b>cardfront</b></span> while <span class = "atn"><b>back</b></span> only shows when <span class = "atn"><b>face</b></span>=<span class = "atv"><b>cardback</b></span>.
+							<br><br>
+							<pre id = "help_codeblock_2" class="prettyprint"></pre>
+							</span>
+						</li>
+						<br id = "hs_listofcards">
+						<li>List of cards
+							<br>
+							<span>This is the section that follows the previous one. It is also composed by two elements: a selection box with the illustration of the selected card and the text editor that contains a complete list of all the cards and information on each of them. This editor receives a JSON object in a scheme of a list of objects that hold the information for each card. When the editor receives an invalid JSON object format it will notify you with the <span style = "color: red"><b>(Invalid)</b></span> keyword on top of it. Each card object can have as many fields as desired but, similar to the card template editor, it also requires some rules in order for the cards to be sucessfully displayed and manipulated in the <b class = "menu_link" onclick="OnTopBarMenuClick('play')">Play</b> area:
+							<ul class = "help_list">
+								<li>One of the fields must be <span class = "atn"><b>attribute</b></span> that defines the card's layout and the desired <span class = "atv"><b>value</b></span>. This is the <span class = "atn"><b>attribute</b></span> defined in the <a href = "#hs_cardtemplate"><b>Card template</b></a>.</li>
+								<li>The selection box value uses the card's first field with 'title' included (example: title, card_title, cardtitle).</li>
+								<li>Also another field is reserved as <i>"card_id"</i> and is automatically inserted and defined on each card object when the editor is unfocused. This is just required to create the decks in <b class = "menu_link" onclick="OnTopBarMenuClick('setup')">Setup</b> and spawn the cards in the <b class = "menu_link" onclick="OnTopBarMenuClick('play')">Play</b> area.</li>
+							</ul>
+							For every card information to be correctly inserted into the HTML the field's name must be the same as the <span class = "atn"><b>attribute</b></span> on the element where the information should be displayed.
+							<br>
+							<br>
+							<div style = "display: flex;">
+								<pre style = "width: 100%; border-right: none;" id = "help_codeblock_3" class="prettyprint"></pre>
+								<pre style = "width: 100%" id = "help_codeblock_4" class="prettyprint"></pre>
+							</div>
+							</span>
+						</li>
+						<br id = "hs_buildingdecks">
+						<li>Building decks
+							<br>
+							<span>This is the final section of <b class = "menu_link" onclick="OnTopBarMenuClick('setup')">Setup</b> and it has a single JSON editor that holds the list of decks that can be used in the <b class = "menu_link" onclick="OnTopBarMenuClick('play')">Play</b> area. It can have as many decks as desired and the JSON scheme is the following: An object where every field name is the name of the deck, used to identify it when spawning, and the value is also an object where every field name is the <i>"card_id"</i> and the value is the amount of card copies.</span>
+							<br>
+						</li>
+					</ol>
+				</li>
+				<br id = "hs_play">
+				<li>Play
+					<br>
+					<span>Coming soon.</span>
+					<br>
+					<ol class = "helpSection">
+						<br id = "hs_playarea">
+						<li>Play area
+							<br>
+							<span>Coming soon.</span>
+							<br>
+						</li>
+						<br id = "hs_contextmenu">
+						<li>Context menu
+							<br>
+							<span>Coming soon.</span>
+							<br>
+						</li>
+					</ol>
+				</li>
+				<br id = "hs_examples">
+				<li>Examples
+					<br>
+					<span>Coming soon.</span>
+					<br>
+					<ol class = "helpSection">
+						<br id = "hs_example1">
+						<li>Example #1
+							<br>
+							<span>Coming soon.</span>
+							<br>
+						</li>
+						<br id = "hs_example2">
+						<li>Example #2
+							<br>
+							<span>Coming soon.</span>
+							<br>
+						</li>
+					</ol>
+				</li>
+			</ol>
+		</div>
+	</div>
+
+	<ul class = "playContextmenu" id="playContextmenu"> </ul>
 
 </body>
 
@@ -449,13 +652,13 @@
 	var home = document.getElementById('home');
 	var setup = document.getElementById('setup');
 	var play = document.getElementById('play');
+	var help = document.getElementById('help');
 
 	var cardTemplateDIV = document.getElementById('cardTemplateDIV');
 	var cardTemplateTA = document.getElementById('cardTemplateTA');
 	var cardExampleDIV = document.getElementById('cardExampleDIV');
 	var cardsJSONTA = document.getElementById('cardsJSONTA');
 	var cardsJSONInvalid = document.getElementById('cardsJSONInvalid');
-	var cardsAutoIDBtn = document.getElementById('cardsAutoIDBtn');
 	var cardSelect = document.getElementById('cardSelect');
 	var decksTA = document.getElementById('decksTA');
 	var decksJSONInvalid = document.getElementById('decksJSONInvalid');
@@ -470,10 +673,7 @@
 	var topbarHeight = parseFloat(getComputedStyle(topbar).height);
 	var visibleSection = home;
 
-	//var cursorXY = {x: 0, y: 0};
-
 	var setupObj = {
-		init: false,
 		cardTemplateEditor: null,
 		cardsJSONEditor: null,
 		decksJSONEditor: null,
@@ -507,7 +707,8 @@
 	topbar_menus.forEach(menu => {fitText(menu, 1, {minFontSize : bodyFontSize*1.5, maxFontSize : bodyFontSize*2.25});});
 	SetupInit();
 	PlayAreaInit();
-	//OnTopBarMenuClick('play');
+	HelpInit();
+	//OnTopBarMenuClick('help');
 	window.onresize = OnWindowResize;
 
 	/* Functions */
@@ -553,23 +754,38 @@
 
 	function OnTopBarMenuClick(menu)
 	{
-		if(menu == 'home' && visibleSection != home)
+		if(	menu == 'home' && visibleSection == home ||
+			menu == 'setup' && visibleSection == setup ||
+			menu == 'play' && visibleSection == play ||
+			menu == 'help' && visibleSection == help)
+		{
+			visibleSection.scrollTo(null, 0);
+			return;
+		}
+
+		if(menu == 'home')
 		{
 			visibleSection.style.display = "none";
 			visibleSection = home;
 			LoadHome();
 		}
-		else if(menu == 'setup' && visibleSection != setup)
+		else if(menu == 'setup')
 		{
 			visibleSection.style.display = "none";
 			visibleSection = setup;
 			LoadSetup();
 		}
-		else if(menu == 'play' && visibleSection != play)
+		else if(menu == 'play')
 		{
 			visibleSection.style.display = "none";
 			visibleSection = play;
 			LoadPlay();
+		}
+		else if(menu == 'help')
+		{
+			visibleSection.style.display = "none";
+			visibleSection = help;
+			LoadHelp();
 		}
 	}
 
@@ -580,54 +796,52 @@
 		if(cardObj == null)
 			return;
 
-		var faces = [null, null];
+		var categoryDIV = cardDIV.querySelector("div");
+		var categoryAttr = "";
+		if(categoryDIV && categoryDIV.attributes[0])
+		{
+			categoryAttr = categoryDIV.attributes[0].name;
+		}
+	
+		var faces = {
+			categoryAttr: categoryAttr,
+			frontface: "",
+			backface: "cardback"
+		}
 
 		for (const [key, value] of Object.entries(cardObj)) {
-			/*
-			if(key[0] == "."){
-				cardDIV.getElementsByClassName(key.substr(1))[0].innerHTML = value;
-			}
-			*/
-			var elmnts = [];
-			try{
-				elmnts = Array.from(cardDIV.querySelectorAll("[" + key + "]"));
-			}
-			catch(e){
-				elmnts = [];
-			}
 
-			for (var i = 0; i < elmnts.length; i++) {
-				var elmnt = elmnts[i];
-
-
-				if(drawCardback && elmnt.getAttribute(key) == "cardback")
-				{
-					elmnt.style.display = "block";
-					faces[1] = elmnt;
-				}
-				// Desired category
-				else if(elmnt.getAttribute(key) == value)
-				{
-					if(drawCardback)
-						elmnt.style.display = "none";
-					else
-						elmnt.style.display = "block";
-
-					faces[0] = elmnt;
-				}
-				// Another category
-				else if(elmnt.getAttribute(key) != "")
-				{
-					elmnt.style.display = "none";
-				}
-				// src URL
-				else if(value.match(setupObj.urlRegex))
-				{
-					elmnt.src = value;
-				}
-				// innerText
+			if(key == categoryAttr)
+			{
+				if(drawCardback)
+					categoryDIV.setAttribute(categoryAttr, "cardback");
 				else
-					elmnt.innerHTML = value;
+					categoryDIV.setAttribute(categoryAttr, value);
+
+				faces.frontface = value;
+			}
+			else
+			{
+				var elmnts = [];
+				try{
+					elmnts = Array.from(cardDIV.querySelectorAll("[" + key + "]"));
+				}
+				catch(e){
+					elmnts = [];
+				}
+
+				for (var i = 0; i < elmnts.length; i++) {
+					var elmnt = elmnts[i];
+
+					// src URL
+					if(value.match(setupObj.urlRegex))
+					{
+						elmnt.src = value;
+					}
+					// innerHTML
+					else
+						elmnt.innerHTML = value;
+				}
 			}
 		}
 
@@ -646,11 +860,6 @@
 	function LoadSetup()
 	{
 		setup.style.display = "block";
-
-		if(setupObj.init == false)
-		{
-			SetupInit();
-		}
 
 		setupObj.cardTemplateEditor.refresh();
 		setupObj.cardsJSONEditor.refresh();
@@ -677,6 +886,9 @@
 		setupObj.cardsJSONEditor.setSize("100%", "100%");
 		setupObj.cardsJSONEditor.on("change", function(){
 			OnCardsJSONEdit();
+		});
+		setupObj.cardsJSONEditor.on("blur", function(){
+			AutoFixCardIds();
 		});
 
 		// Init Decks JSON Editor
@@ -711,11 +923,74 @@
 			});
 		});
 
-		setupObj.init = true;
+		function InitSetupExampleH2Div()
+		{
+			const ele = document.getElementsByClassName('exampleH2Div')[0];
+		    ele.style.cursor = 'grab';
+
+		    let pos = { top: 0, left: 0, x: 0, y: 0 };
+
+		    const mouseDownHandler = function(e) {
+		        ele.style.cursor = 'grabbing';
+		        ele.style.userSelect = 'none';
+
+		        pos = {
+		            left: ele.scrollLeft,
+		            top: ele.scrollTop,
+		            // Get the current mouse position
+		            x: e.clientX,
+		            y: e.clientY,
+		        };
+
+		        document.addEventListener('mousemove', mouseMoveHandler);
+		        document.addEventListener('mouseup', mouseUpHandler);
+		    };
+
+		    const mouseMoveHandler = function(e) {
+		        // How far the mouse has been moved
+		        const dx = e.clientX - pos.x;
+		        const dy = e.clientY - pos.y;
+
+		        // Scroll the element
+		        ele.scrollTop = pos.top - dy;
+		        ele.scrollLeft = pos.left - dx;
+		    };
+
+		    const mouseUpHandler = function() {
+		        ele.style.cursor = 'grab';
+		        ele.style.removeProperty('user-select');
+
+		        document.removeEventListener('mousemove', mouseMoveHandler);
+		        document.removeEventListener('mouseup', mouseUpHandler);
+		    };
+
+		    // Attach the handler
+		    ele.addEventListener('mousedown', mouseDownHandler);
+		}
+		InitSetupExampleH2Div();
 	}
 
 	function GetTemplateHTML()
 	{
+		var templateHTML = setupObj.cardTemplateEditor.getValue();
+
+		var styles = templateHTML.match(/<style>.*?<\/style>/gs);
+
+		for (var i = 0; i < styles.length; i++) {
+			templateHTML = templateHTML.replace(styles[i], "");
+		}
+
+		while(true)
+		{
+			if(templateHTML[0] == " " || templateHTML[0] == "\n")
+				templateHTML = templateHTML.substr(1);
+			else
+				break;
+		}
+
+		return templateHTML;
+
+		/*
 		var templateHTML = setupObj.cardTemplateEditor.getValue();
 		var split = templateHTML.split("</style>");
 		if(split.length >= 2)
@@ -728,12 +1003,60 @@
 		}
 
 		return templateHTML;
+		*/
 	}
 
 	function OnCardTemplateEdit()
 	{
-		cardTemplateDIV.innerHTML = setupObj.cardTemplateEditor.getValue();
+		var templateHTML = setupObj.cardTemplateEditor.getValue();
+		cardTemplateDIV.innerHTML = templateHTML;
 		DisplayExampleCard(cardSelect.selectedIndex);
+
+		var categoryDIV = cardTemplateDIV.querySelector("div");
+		if(categoryDIV && categoryDIV.attributes[0])
+		{
+			var categoryAttr = categoryDIV.attributes[0].name;
+
+			var reg = new RegExp(`\\[(${categoryAttr})=(\\w*)\\]`, 'g');
+			var matches = templateHTML.match(reg);
+			
+			var categories = []
+			var exampleH2Div = document.getElementsByClassName("exampleH2Div")[0];
+			exampleH2Div.innerHTML = "";
+
+			matches.forEach(m => {
+				var split = m.split("=");
+				var value = split[1].slice(0, -1);
+				if(!categories.includes(value))
+				{
+					categories.push(value);
+					var h2 = document.createElement("h2");
+					h2.classList.add("exampleH2");
+					h2.innerText = value;
+					h2.onclick = function(){ OnExampleH2Click(categoryAttr, value) };
+					exampleH2Div.appendChild(h2);
+				}
+			});
+		}
+	}
+
+	function OnExampleH2Click(categoryAttr, value)
+	{
+		var templateHTML = setupObj.cardTemplateEditor.getValue();
+
+		var div = document.createElement("div");
+		div.innerHTML = templateHTML;
+
+		var categoryDIV = div.querySelector("div");
+		if(categoryDIV)
+		{
+			categoryDIV.setAttribute(categoryAttr, value);
+			var scrollTop = setupObj.cardTemplateEditor.doc.scrollTop;
+			setupObj.cardTemplateEditor.setValue(div.innerHTML.replaceAll('=""', ''));
+			setupObj.cardTemplateEditor.scrollTo(null, scrollTop);
+		}
+
+		div.remove();
 	}
 
 	function OnDecksJSONEdit()
@@ -824,13 +1147,13 @@
 		{
 			setupObj.cardsJSON = [];
 			cardsJSONInvalid.style.display = "block";
-			cardsAutoIDBtn.style.display = "none";
+			//cardsAutoIDBtn.style.display = "none";
 			//return;
 		}
 		else
 		{
 			cardsJSONInvalid.style.display = "none";
-			cardsAutoIDBtn.style.display = "block";
+			//cardsAutoIDBtn.style.display = "block";
 		}
 
 		var currentIndex = Math.clamp(cardSelect.selectedIndex, 0, cardSelect.length - 1);
@@ -876,13 +1199,16 @@
 		DrawCard(cardExampleDIV, templateHTML, cardObj);
 	}
 
-	function GenerateAutoIDs()
+	function AutoFixCardIds()
 	{
-		for (var i = 0; i < setupObj.cardsJSON.length; i++) {
+		for (var i = 0; i < setupObj.cardsJSON.length; i++)
+		{
 			setupObj.cardsJSON[i]['card_id'] = i.toString();
 		}
 
+		var scrollTop = setupObj.cardsJSONEditor.doc.scrollTop;
 		setupObj.cardsJSONEditor.setValue(JSON.stringify(setupObj.cardsJSON, undefined, 2));
+		setupObj.cardsJSONEditor.scrollTo(null, scrollTop);
 	}
 
 			/* Play Functions */
@@ -1114,6 +1440,7 @@
 	function DragCard(element)
 	{
 		var cardDIV = element.div;
+		var cardCategoryDIV = cardDIV.querySelector("div");
 		var cardObj = element.obj;
 		var cardFaces = element.faces;
 		var lastTouch = {x: 0, y: 0}
@@ -1178,18 +1505,10 @@
 
 		function flipCard()
 		{
-			if(cardFaces[0].style.display == "none")
-				cardFaces[0].style.display = "block";
+			if(cardCategoryDIV.getAttribute(cardFaces.categoryAttr) == cardFaces.frontface)
+				cardCategoryDIV.setAttribute(cardFaces.categoryAttr, cardFaces.backface);
 			else
-				cardFaces[0].style.display = "none";
-
-			if(cardFaces[1] != null)
-			{
-				if(cardFaces[1].style.display == "none")
-					cardFaces[1].style.display = "block";
-				else
-					cardFaces[1].style.display = "none";
-			}
+				cardCategoryDIV.setAttribute(cardFaces.categoryAttr, cardFaces.frontface);
 		}
 	}
 
@@ -1211,6 +1530,33 @@
 	function MatrixArrayToStyle(matrixArray)
 	{
 		return "translate(" + matrixArray[4] + "px, " + matrixArray[5] + "px) scale(" + matrixArray[0] + ", " + matrixArray[3] + ")";
+	}
+
+		/* Help Functions */
+
+	function LoadHelp()
+	{
+		help.style.display = "block";
+	}
+
+	function HelpInit()
+	{
+		var aList = help.querySelectorAll("ol li a");
+		aList.forEach(a => {
+			a.onclick = function(e){e.preventDefault(); document.getElementById(a.hash.substr(1)).scrollIntoView();};
+		});
+
+		var help_codeblock_1 = document.getElementById("help_codeblock_1");
+		help_codeblock_1.innerText = "<style>\n// CSS here\n</style>\n\n<div category|type|face... = cardfront|cardback|monster|item|hearts|clubs...>\n<!-- HTML here -->\n</div>";
+
+		var help_codeblock_2 = document.getElementById("help_codeblock_2");
+		help_codeblock_2.innerText = "<style>\n [front], [back]\n { visibility: hidden; }\n\n [face=cardfront] [front],\n [face=cardback] [back] \n { visibility: visible; }\n</style>\n\n<div face=cardfront>\n <div front> The front of the card is visible! </div>\n <div back> And the back is hidden! </div>\n</div>";
+
+		var help_codeblock_3 = document.getElementById("help_codeblock_3");
+		help_codeblock_3.innerText = "<style>\n [monster_info], [item_info]\n { visibility: hidden; }\n\n [category=monster] [monster_info],\n [category=item] [item_info] \n { visibility: visible; }\n</style>\n\n<div category=monster>\n <div monster_info>\n  <span title> (Monster name) </span>\n  <span health> (Monster health) </span>\n  <span attack> (Monster attack) </span>\n </div>\n <div item_info>\n  <span title> (Item name) </span>\n  <span description> (Item description) </span>\n </div>\n</div>";
+
+		var help_codeblock_4 = document.getElementById("help_codeblock_4");
+		help_codeblock_4.innerText = '[\n  {\n    "category": "monster",\n    "title": "Dead Tooth Felix",\n    "attack": "5",\n    "health" : "10",\n    "card_id": "0"\n  },\n  {\n    "category": "item",\n    "title": "Health Potion II",\n    "description": "Heals, duhh!",\n    "card_id": "1"\n  },\n  ...\n]';
 	}
 
 </script>
